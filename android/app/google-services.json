@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "982844145303",
+    "firebase_url": "https://artwork-6cc55.firebaseio.com",
+    "project_id": "artwork-6cc55",
+    "storage_bucket": "artwork-6cc55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:982844145303:android:fe503e331f4cf1938a33d2",
+        "android_client_info": {
+          "package_name": "com.ideas.artstore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "982844145303-sn5udrfjgboe54feinfa3ic6ekb20emf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDV6tnRF7ndLhR2MR0KZQsbJ19KrAmXF3Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "982844145303-sn5udrfjgboe54feinfa3ic6ekb20emf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
