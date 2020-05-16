@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:artstore/CustomWidget/splashScreen.dart';
 import 'package:artstore/Drawer/Collection/uppload.dart';
@@ -6,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+
 
 class MyUpload extends StatefulWidget {
   final FirebaseUser firebaseUser;
@@ -124,13 +123,7 @@ class _MyUploadState extends State<MyUpload> {
           .collection("Collection")
           .snapshots(),
       builder: (_, AsyncSnapshot snapshot) {
-       return snapshot.data.documents.length == 0 ?Center(
-         child: Container(
-           height: 350,
-           width: 250,
-           child: Image.asset("img/emp.png",fit: BoxFit.cover,filterQuality: FilterQuality.high,),
-         ),
-       ): snapshot.hasData
+       return snapshot.hasData
             ? Container(
                 height: DeviceSize.blockSizeVertical *78.8,
                 child: ListView.builder(
@@ -242,7 +235,7 @@ class _MyUploadState extends State<MyUpload> {
                     }),
               )
             : Center(
-                child: CircularProgressIndicator(),
+                child: Container(),
               );
       },
     );
