@@ -35,8 +35,11 @@ class _MyUploadState extends State<MyUpload> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+
         appBar: AppBar(
+          brightness: Brightness.light,
           backgroundColor: Colors.transparent,
           elevation: 0.0,
           iconTheme: IconThemeData(color: Colors.black),

@@ -1,4 +1,5 @@
 import 'package:artstore/Drawer/Collection/myuploads.dart';
+import 'package:artstore/test.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,8 @@ class _FirstViewState extends State<FirstView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
+        brightness: Brightness.light,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
         iconTheme: IconThemeData(color: Colors.black),
@@ -34,51 +37,69 @@ class _FirstViewState extends State<FirstView> {
               height: 20,
             ),
             GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>MyUpload(
-                  firebaseUser: widget.firebaseUser,
-                )));
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyUpload(
+                              firebaseUser: widget.firebaseUser,
+                            )));
               },
               child: Container(
-                height: 350,
-                width: 400,
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left:15.0),
-                      child: Text("My uploads",style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w600,
-                      fontFamily: 'font2'),),
-                    ),
-                    Image.asset("img/upl.png",filterQuality: FilterQuality.high,fit: BoxFit.fill,),
-                  ],
-                )
-              ),
+                  height: 350,
+                  width: 400,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0),
+                        child: Text(
+                          "My uploads",
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'font2'),
+                        ),
+                      ),
+                      Image.asset(
+                        "img/upl.png",
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.fill,
+                      ),
+                    ],
+                  )),
             ),
             SizedBox(
               height: 70,
             ),
             GestureDetector(
-              onTap: (){},
+              onTap: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Test(
+                  firebaseUser: widget.firebaseUser,
+                )));
+              },
               child: Container(
-                height: 350,
-                width: 400,
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left:30.0),
-                      child: Text("Other uploads",style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'font2')),
-                    ),
-                    Image.asset("img/coll.png",filterQuality: FilterQuality.high,fit: BoxFit.fill,),
-                  ],
-                )
-              ),
+                  height: 350,
+                  width: 400,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30.0),
+                        child: Text("Other uploads",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'font2')),
+                      ),
+                      Image.asset(
+                        "img/coll.png",
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.fill,
+                      ),
+                    ],
+                  )),
             )
           ],
         ),
