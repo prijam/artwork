@@ -59,4 +59,24 @@ class firestore {
     QuerySnapshot qn = await firestore.collection("explore").getDocuments();
     return qn.documents;
   }
+  Future art() async {
+    var firestore = Firestore.instance;
+    QuerySnapshot qn = await firestore.collection("userupload").document("Art").collection("Uploads").getDocuments();
+    return qn.documents;
+  }
+  Future paint() async {
+    var firestore = Firestore.instance;
+    QuerySnapshot qn = await firestore.collection("userupload").document("Paint").collection("Uploads").getDocuments();
+    return qn.documents;
+  }
+  Future craft() async {
+    var firestore = Firestore.instance;
+    QuerySnapshot qn = await firestore.collection("userupload").document("Craft").collection("Uploads").getDocuments();
+    return qn.documents;
+  }
+  Future illu() async {
+    var firestore = Firestore.instance;
+    QuerySnapshot qn = await firestore.collection("userupload").document("Illustration").collection("Uploads").getDocuments();
+    return qn.documents;
+  }
 }
