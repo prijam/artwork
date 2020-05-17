@@ -83,6 +83,15 @@ class _UploadState extends State<Upload> {
                 "itemImage": downloadUrl,
                 "photoUrlFile": fileName,
               }))
+          .whenComplete(() =>
+              Firestore.instance.collection("explore").document().setData({
+                "title": _title,
+                "description": _desc,
+                "price": _price,
+                "contacNumber": _contact,
+                "itemImage": downloadUrl,
+                "photoUrlFile": fileName,
+              }))
           .whenComplete(() => Navigator.of(context).pop());
     } else {
       _scaffoldState.currentState.showSnackBar(noPhoto());
@@ -377,7 +386,7 @@ class _UploadState extends State<Upload> {
             _price = value;
           },
           cursorColor: Colors.red,
-          controller: _pri..text="Rs.",
+          controller: _pri..text = "Rs.",
           keyboardType: TextInputType.number,
           cursorWidth: 2.0,
           decoration: InputDecoration.collapsed(

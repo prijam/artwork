@@ -54,4 +54,9 @@ class firestore {
     QuerySnapshot qn = await firestore.collection("seemore2").getDocuments();
     return qn.documents;
   }
+  Future explore() async {
+    var firestore = Firestore.instance;
+    QuerySnapshot qn = await firestore.collection("explore").getDocuments();
+    return qn.documents;
+  }
 }

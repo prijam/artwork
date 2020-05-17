@@ -539,8 +539,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   return artlayout(context, snapshot.data.documents[index]);
                 })
             : Center(
-                child: Text("Loading"),
-              );
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(
+              Color.fromRGBO(212, 20, 15, 1.0),
+            ),
+          ),
+        );
       },
     );
   }
@@ -632,8 +636,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   return artlayout(context, snapshot.data.documents[index]);
                 })
             : Center(
-                child: Text("Loading"),
-              );
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(
+              Color.fromRGBO(212, 20, 15, 1.0),
+            ),
+          ),
+        );
       },
     );
   }
@@ -725,8 +733,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   return illuview(context, snapshot.data.documents[index]);
                 })
             : Center(
-                child: Text("Loading"),
-              );
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(
+              Color.fromRGBO(212, 20, 15, 1.0),
+            ),
+          ),
+        );
       },
     );
   }
@@ -817,8 +829,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   return paintView(context, snapshot.data.documents[index]);
                 })
             : Center(
-                child: Text("Loading"),
-              );
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(
+              Color.fromRGBO(212, 20, 15, 1.0),
+            ),
+          ),
+        );
       },
     );
   }

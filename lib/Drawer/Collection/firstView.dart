@@ -1,4 +1,5 @@
 import 'package:artstore/Drawer/Collection/myuploads.dart';
+import 'package:artstore/Drawer/Collection/uploadcollectioh.dart';
 import 'package:artstore/test.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,36 @@ class _FirstViewState extends State<FirstView> {
             ),
             GestureDetector(
               onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Collection()));
+              },
+              child: Container(
+                  height: 350,
+                  width: 400,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30.0),
+                        child: Text("Uploads collection",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'font2')),
+                      ),
+                      Image.asset(
+                        "img/coll.png",
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.fill,
+                      ),
+                    ],
+                  )),
+            ),
+            SizedBox(
+              height: 70,
+            ),
+            GestureDetector(
+              onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -68,33 +99,6 @@ class _FirstViewState extends State<FirstView> {
                     ],
                   )),
             ),
-            SizedBox(
-              height: 70,
-            ),
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                  height: 350,
-                  width: 400,
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 30.0),
-                        child: Text("Other uploads",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'font2')),
-                      ),
-                      Image.asset(
-                        "img/coll.png",
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.fill,
-                      ),
-                    ],
-                  )),
-            )
           ],
         ),
       ),
