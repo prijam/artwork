@@ -50,11 +50,6 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
         width: 450,
         child: Column(
           children: <Widget>[
-//            SizedBox(
-//              height: 10.0,
-//            ),
-//            tabbar(),
-//            tabview(),
             SingleChildScrollView(
               child: Container(
                 height: 720,
@@ -72,196 +67,53 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                 ),
               ),
             ),
-//            SingleChildScrollView(
-//              scrollDirection: Axis.horizontal,
-//              child: Container(
-//                height:84,
-//                child: Row(
-//                  children: <Widget>[
-//                    Container(
-//                      margin: EdgeInsets.only(left: 10,top: 20),
-//                      height: 50,
-//                      width: 70,
-//                      child: Text("Items Overview",
-//                      style: TextStyle(
-//                        color: Colors.grey.withOpacity(0.7),
-//                        fontFamily: 'font2'
-//                      ),),
-//                    ),
-//                    Container(
-//                      margin: EdgeInsets.only(left: 10,top:27),
-//                      height: 60,
-//                      width: 80,
-//                      child: Column(
-//                        children: <Widget>[
-//                          Text("Total Items",
-//                            style: TextStyle(
-//                                color: Colors.grey.withOpacity(0.7),
-//                                fontFamily: 'font2'
-//                            ),),
-//                          Container(
-//                              height: 40,
-//                              width: 50,
-//                            child: FutureBuilder(
-//                              future: fire.explore(),
-//                              builder: (_,snapshot){
-//                                return snapshot.hasData?Container(
-//                                  height: 40,
-//                                    width: 50,
-//                                    child: Container(
-//                                      margin: EdgeInsets.only(left:18,top: 3),
-//                                        child: Text(snapshot.data.length.toString(),style: TextStyle(
-//                                          color: Colors.white,
-//                                            fontWeight: FontWeight.bold,
-//                                            fontFamily: 'font1',
-//                                          fontSize: 16.0
-//                                        ),))):CircularProgressIndicator();
-//                              },
-//                            )
-//                          )
-//                        ],
-//                      ),
-//                    ),
-//                    Container(
-//                      margin: EdgeInsets.only(left: 10,top:28),
-//                      height: 60,
-//                      width: 80,
-//                      child: Column(
-//                        children: <Widget>[
-//                          Text("Art",
-//                            style: TextStyle(
-//                                color: Colors.grey.withOpacity(0.7),
-//                                fontFamily: 'font2'
-//                            ),),
-//                          Container(
-//                              height: 40,
-//                              width: 50,
-//                              child: FutureBuilder(
-//                                future: fire.art(),
-//                                builder: (_,snapshot){
-//                                  return snapshot.hasData?Container(
-//                                      height: 40,
-//                                      width: 50,
-//                                      child: Container(
-//                                          margin: EdgeInsets.only(left:18,top: 2),
-//                                          child: Text(snapshot.data.length.toString(),style: TextStyle(
-//                                              color: Colors.white,
-//                                            fontWeight: FontWeight.bold,
-//                                              fontFamily: 'font1',
-//                                              fontSize: 16.0
-//                                          ),))):CircularProgressIndicator();
-//                                },
-//                              )
-//                          )
-//                        ],
-//                      ),
-//                    ),
-//                    Container(
-//                      margin: EdgeInsets.only(left: 10,top:28),
-//                      height: 60,
-//                      width: 80,
-//                      child: Column(
-//                        children: <Widget>[
-//                          Text("Paint",
-//                            style: TextStyle(
-//                                color: Colors.grey.withOpacity(0.7),
-//                                fontFamily: 'font2'
-//                            ),),
-//                          Container(
-//                              height: 40,
-//                              width: 50,
-//                              child: FutureBuilder(
-//                                future: fire.paint(),
-//                                builder: (_,snapshot){
-//                                  return snapshot.hasData?Container(
-//                                      height: 40,
-//                                      width: 50,
-//                                      child: Container(
-//                                          margin: EdgeInsets.only(left:18,top: 2),
-//                                          child: Text(snapshot.data.length.toString(),style: TextStyle(
-//                                              color: Colors.white,
-//                                              fontWeight: FontWeight.bold,
-//                                              fontFamily: 'font1',
-//                                              fontSize: 16.0
-//                                          ),))):CircularProgressIndicator();
-//                                },
-//                              )
-//                          )
-//                        ],
-//                      ),
-//                    ),
-//                    Container(
-//                      margin: EdgeInsets.only(left: 10,top:28),
-//                      height: 60,
-//                      width: 80,
-//                      child: Column(
-//                        children: <Widget>[
-//                          Text("Craft",
-//                            style: TextStyle(
-//                                color: Colors.grey.withOpacity(0.7),
-//                                fontFamily: 'font2'
-//                            ),),
-//                          Container(
-//                              height: 40,
-//                              width: 50,
-//                              child: FutureBuilder(
-//                                future: fire.craft(),
-//                                builder: (_,snapshot){
-//                                  return snapshot.hasData?Container(
-//                                      height: 40,
-//                                      width: 50,
-//                                      child: Container(
-//                                          margin: EdgeInsets.only(left:18,top: 2),
-//                                          child: Text(snapshot.data.length.toString(),style: TextStyle(
-//                                              color: Colors.white,
-//                                              fontWeight: FontWeight.bold,
-//                                              fontFamily: 'font1',
-//                                              fontSize: 16.0
-//                                          ),))):CircularProgressIndicator();
-//                                },
-//                              )
-//                          )
-//                        ],
-//                      ),
-//                    ),
-//                    Container(
-//                      margin: EdgeInsets.only(left: 10,top:28),
-//                      height: 60,
-//                      width: 80,
-//                      child: Column(
-//                        children: <Widget>[
-//                          Text("Illustration",
-//                            style: TextStyle(
-//                                color: Colors.grey.withOpacity(0.7),
-//                                fontFamily: 'font2'
-//                            ),),
-//                          Container(
-//                              height: 40,
-//                              width: 50,
-//                              child: FutureBuilder(
-//                                future: fire.illu(),
-//                                builder: (_,snapshot){
-//                                  return snapshot.hasData?Container(
-//                                      height: 40,
-//                                      width: 50,
-//                                      child: Container(
-//                                          margin: EdgeInsets.only(left:18,top: 2),
-//                                          child: Text(snapshot.data.length.toString(),style: TextStyle(
-//                                              color: Colors.white,
-//                                              fontWeight: FontWeight.bold,
-//                                              fontFamily: 'font1',
-//                                              fontSize: 16.0
-//                                          ),))):CircularProgressIndicator();
-//                                },
-//                              )
-//                          )
-//                        ],
-//                      ),
-//                    )
-//                  ],
-//                ),
-//              ),
-//            )
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Container(
+                height: 84,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(left: 10, top: 20),
+                      height: 50,
+                      width: 70,
+                      child: Text(
+                        "Top sellers",
+                        style: TextStyle(
+                            color: Colors.grey.withOpacity(0.7),
+                            fontFamily: 'font2'),
+                      ),
+                    ),
+                    Image.asset(
+                      "img/av1.png",
+                      height: 50,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Image.asset(
+                      "img/av4.png",
+                      height: 50,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Image.asset(
+                      "img/av5.png",
+                      height: 50,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Image.asset(
+                      "img/4.png",
+                      height: 50,
+                    )
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -392,41 +244,38 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
           .snapshots(),
       builder: (_, snapshot) {
         return snapshot.hasData
-                ? Container(
-                    margin: EdgeInsets.only(top: 10),
-                    child: StaggeredGridView.countBuilder(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      itemCount: snapshot.data.documents.length,
-                      itemBuilder: (context, index) {
-                        String price = snapshot.data.documents[index]["price"];
-                        return Container(
-                          margin: EdgeInsets.only(left: 10, right: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12))),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12.0),
-                            ),
-                            child: FadeInImage.assetNetwork(
-                              placeholder: "img/img.gif",
-                              image: snapshot.data.documents[index]
-                                  ["itemImage"],
-                              fit: BoxFit.cover,
-                              fadeInCurve: Curves.easeIn,
-                            ),
-                          ),
-                        );
-                      },
-                      staggeredTileBuilder: (index) {
-                        return StaggeredTile.count(
-                            1, index.isEven ? 1.0 : 1.60);
-                      },
-                    ),
-                  )
+            ? Container(
+                margin: EdgeInsets.only(top: 10),
+                child: StaggeredGridView.countBuilder(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index) {
+                    String price = snapshot.data.documents[index]["price"];
+                    return Container(
+                      margin: EdgeInsets.only(left: 10, right: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.all(Radius.circular(12))),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12.0),
+                        ),
+                        child: FadeInImage.assetNetwork(
+                          placeholder: "img/img.gif",
+                          image: snapshot.data.documents[index]["itemImage"],
+                          fit: BoxFit.cover,
+                          fadeInCurve: Curves.easeIn,
+                        ),
+                      ),
+                    );
+                  },
+                  staggeredTileBuilder: (index) {
+                    return StaggeredTile.count(1, index.isEven ? 1.0 : 1.60);
+                  },
+                ),
+              )
             : Center(
                 child: CircularProgressIndicator(
                   valueColor: new AlwaysStoppedAnimation<Color>(
