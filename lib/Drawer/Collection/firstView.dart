@@ -17,7 +17,6 @@ class _FirstViewState extends State<FirstView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         brightness: Brightness.light,
         backgroundColor: Colors.transparent,
         elevation: 0.0,
@@ -73,12 +72,7 @@ class _FirstViewState extends State<FirstView> {
               height: 70,
             ),
             GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Test(
-                  firebaseUser: widget.firebaseUser,
-                )));
-              },
+              onTap: () {},
               child: Container(
                   height: 350,
                   width: 400,
