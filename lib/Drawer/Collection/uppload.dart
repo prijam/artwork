@@ -33,8 +33,6 @@ class _UploadState extends State<Upload> {
   TextEditingController _con = TextEditingController();
   TextEditingController titl1 = TextEditingController();
   TextEditingController des1 = TextEditingController();
-  TextEditingController con1 = TextEditingController();
-  TextEditingController rate1 = TextEditingController();
 
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -46,7 +44,7 @@ class _UploadState extends State<Upload> {
   }
 
   Future _saveCard(BuildContext context) async {
-    if (_image != null) {
+    if (_image != null && selectType != null) {
       _scaffoldState.currentState.showSnackBar(wait());
       String fileName = basename(_image.path);
       StorageReference fireBaseStorageRef =
@@ -145,10 +143,10 @@ class _UploadState extends State<Upload> {
                   child: Divider(
                     thickness: 0.5,
                   )),
-              pric(),
-              pri(),
               itemtype(),
               type(),
+              pric(),
+              pri(),
               contactNo(),
               con(),
               SizedBox(
@@ -491,10 +489,11 @@ class _UploadState extends State<Upload> {
             if (!snapshot.hasData) {
               return Text("Loading.....");
             } else {
-              List<DropdownMenuItem> currencyItems = [];
+              List<DropdownMenuItem> artType = [];
               for (int i = 0; i < snapshot.data.documents.length; i++) {
                 DocumentSnapshot snap = snapshot.data.documents[i];
-                currencyItems.add(
+
+                artType.add(
                   DropdownMenuItem(
                     child: Text(
                       snap.documentID,
@@ -510,10 +509,10 @@ class _UploadState extends State<Upload> {
                   Icon(Icons.image, size: 25.0, color: Color(0xff11b719)),
                   SizedBox(width: 50.0),
                   DropdownButton(
-                    items: currencyItems,
-                    onChanged: (currencyValue) {
+                    items: artType,
+                    onChanged: (item) {
                       setState(() {
-                        selectType = currencyValue;
+                        selectType = item;
                       });
                     },
                     value: selectType,
@@ -638,7 +637,7 @@ class _UploadState extends State<Upload> {
             width: 20.0,
           ),
           Expanded(
-            child: Text("No Photo Selected"),
+            child: Text("Check the image type and item image"),
           )
         ],
       ),

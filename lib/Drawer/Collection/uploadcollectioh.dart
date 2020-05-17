@@ -11,8 +11,6 @@ class Collection extends StatefulWidget {
 
 class _CollectionState extends State<Collection> with TickerProviderStateMixin {
   TabController _tabController;
-  RegExp reg = new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
-  Function mathFunc = (Match match) => '${match[1]},';
   firestore fire = firestore();
 
   @override
@@ -70,18 +68,20 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Container(
+                margin: EdgeInsets.only(right:60),
                 height: 84,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Container(
-                      margin: EdgeInsets.only(left: 10, top: 20),
+                      margin: EdgeInsets.only(left: 10, top: 10),
                       height: 50,
                       width: 70,
                       child: Text(
                         "Top sellers",
                         style: TextStyle(
                             color: Colors.grey.withOpacity(0.7),
+                            fontSize: 18.0,
                             fontFamily: 'font2'),
                       ),
                     ),
@@ -179,7 +179,12 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
 
   Widget tabview() {
     return Container(
-      height: 650.0,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(100.0),
+              bottomRight: Radius.circular(100.0))),
+      height:610.0,
       child: TabBarView(
         controller: _tabController,
         children: <Widget>[explore(), art(), paint(), craft(), illu()],
