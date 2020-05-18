@@ -39,7 +39,9 @@ class _FirstViewState extends State<FirstView> {
             GestureDetector(
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Collection()));
+                    MaterialPageRoute(builder: (context) => Collection(
+                      firebaseUser: widget.firebaseUser,
+                    )));
               },
               child: Container(
                   height: 350,

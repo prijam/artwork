@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class Collection extends StatefulWidget {
+  final FirebaseUser firebaseUser;
+
+  Collection({this.firebaseUser});
+
   @override
   _CollectionState createState() => _CollectionState();
 }
@@ -49,11 +53,14 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
               Icons.close,
               size: 30.0,
             ),
-            onPressed: () => Navigator.of(context).pop(null),
+            onPressed: () {
+              Navigator.of(context).pop(null);
+            },
           )
         ],
       ),
       body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
         child: Container(
           color: Colors.black,
           height: 950,
@@ -220,13 +227,31 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                           String price =
                               snapshot.data.documents[index]["price"];
                           _onTapImage(BuildContext context) {
+                            Future _sendMsg(BuildContext context) async {
+                              print("Entering firebase");
+                              Firestore.instance
+                                  .collection("users")
+                                  .document(
+                                      snapshot.data.documents[index]["uID"])
+                                  .collection("User_Data")
+                                  .document("Messages")
+                                  .collection("Inbox")
+                                  .document()
+                                  .setData({
+                                "message": message,
+                                "senderID": widget.firebaseUser.uid
+                              }).whenComplete(() {
+                                msgcon.clear();
+                                Navigator.of(context).pop();
+                              });
+                            }
+
                             return Scaffold(
                               backgroundColor: Colors.transparent,
                               body: Padding(
                                 padding: const EdgeInsets.only(
                                     right: 18.0, left: 18.0),
                                 child: SingleChildScrollView(
-
                                   child: Container(
                                     decoration: BoxDecoration(
                                         color: Colors.white.withOpacity(0.8),
@@ -243,14 +268,15 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                         Container(
                                           margin: EdgeInsets.only(left: 300.0),
                                           child: IconButton(
-                                            icon: new Icon(
-                                              Icons.close,
-                                              color: Colors.red,
-                                              size: 35.0,
-                                            ),
-                                            onPressed: () =>
-                                                Navigator.of(context).pop(null),
-                                          ),
+                                              icon: new Icon(
+                                                Icons.close,
+                                                color: Colors.red,
+                                                size: 35.0,
+                                              ),
+                                              onPressed: () {
+                                                msgcon.clear();
+                                                Navigator.of(context).pop(null);
+                                              }),
                                         ),
                                         Positioned(
                                           top: 50,
@@ -259,7 +285,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                               height: 50,
                                               width: 250,
                                               child: StreamBuilder<User>(
-                                                stream: Auth.getUser(snapshot.data
+                                                stream: Auth.getUser(snapshot
+                                                    .data
                                                     .documents[index]["uID"]),
                                                 builder: (_, snapshot) {
                                                   return snapshot.hasData
@@ -327,8 +354,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                             child: Text(
                                               snapshot.data.documents[index]
                                                   ["title"],
-                                              style:
-                                                  TextStyle(fontFamily: "font2"),
+                                              style: TextStyle(
+                                                  fontFamily: "font2"),
                                             ),
                                           ),
                                         ),
@@ -366,14 +393,29 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                           ),
                                         ),
                                         Positioned(
-                                            bottom:50,
+                                            bottom: 50,
                                             left: 40,
                                             child: messageBox()),
                                         Positioned(
                                           bottom: 10,
                                           right: 10,
-                                          child: touch(context),
-                                        )
+                                          child: Container(
+                                            width: 350,
+                                            height: 40,
+                                            child: RaisedButton(
+                                              color: Colors.deepOrange,
+                                              onPressed: () {
+                                                print("dfsdfs");
+                                                _sendMsg(context);
+                                              },
+                                              child: Text(
+                                                "Send Message",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -812,24 +854,9 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
     );
   }
 
-  Widget touch(BuildContext context) {
-    return Container(
-      width: 350,
-      height: 40,
-      child: RaisedButton(
-        color: Colors.deepOrange,
-        onPressed: () {},
-        child: Text(
-          "Send Message",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
-  }
   Widget messageBox() {
     return Container(
-
-      height:70,
+      height: 70,
       width: 300,
       color: Colors.transparent,
       child: new TextFormField(
@@ -850,8 +877,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
           ),
           style: TextStyle(
             color: Colors.black,
-            fontSize: 22.0,
-            fontWeight: FontWeight.w600,
+            fontSize: 18.0,
+            fontWeight: FontWeight.w300,
           )),
     );
   }
