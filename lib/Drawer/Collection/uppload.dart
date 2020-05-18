@@ -80,6 +80,7 @@ class _UploadState extends State<Upload> {
                 "contacNumber": _contact,
                 "itemImage": downloadUrl,
                 "photoUrlFile": fileName,
+                "uID": widget.firebaseUser.uid,
               }))
           .whenComplete(() =>
               Firestore.instance.collection("explore").document().setData({
@@ -89,6 +90,7 @@ class _UploadState extends State<Upload> {
                 "contacNumber": _contact,
                 "itemImage": downloadUrl,
                 "photoUrlFile": fileName,
+                "uID": widget.firebaseUser.uid,
               }))
           .whenComplete(() => Navigator.of(context).pop());
     } else {

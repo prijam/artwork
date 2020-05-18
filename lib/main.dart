@@ -5,7 +5,6 @@ import 'package:artstore/CustomWidget/splashScreen.dart';
 import 'package:artstore/Login/signup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() => runApp(ArtApp());
 

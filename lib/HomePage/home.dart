@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Column(
               children: <Widget>[
                 SizedBox(
-                  height: 2.0,
+                  height:5.0,
                 ),
                 header(),
                 SizedBox(

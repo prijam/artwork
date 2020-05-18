@@ -242,6 +242,7 @@ class _MyUploadState extends State<MyUpload> with TickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Container(
+                          margin: EdgeInsets.only(top: 10),
                           decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10.0)),

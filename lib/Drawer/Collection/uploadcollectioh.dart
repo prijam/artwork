@@ -1,5 +1,8 @@
+import 'package:artstore/firebaseHandler/auth.dart';
 import 'package:artstore/firebaseHandler/firebbstore.dart';
+import 'package:artstore/firebaseHandler/userModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -12,6 +15,10 @@ class Collection extends StatefulWidget {
 class _CollectionState extends State<Collection> with TickerProviderStateMixin {
   TabController _tabController;
   firestore fire = firestore();
+  RegExp reg = new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+  Function mathFunc = (Match match) => '${match[1]},';
+  String message = "";
+  TextEditingController msgcon = TextEditingController();
 
   @override
   void initState() {
@@ -46,14 +53,14 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
           )
         ],
       ),
-      body: Container(
-        color: Colors.black,
-        height: 950,
-        width: 450,
-        child: Column(
-          children: <Widget>[
-            SingleChildScrollView(
-              child: Container(
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.black,
+          height: 950,
+          width: 450,
+          child: Column(
+            children: <Widget>[
+              Container(
                 height: 720,
                 width: 450,
                 decoration: BoxDecoration(
@@ -68,57 +75,57 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                   ],
                 ),
               ),
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Container(
-                margin: EdgeInsets.only(right: 60),
-                height: 84,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(left: 10, top: 10),
-                      height: 50,
-                      width: 70,
-                      child: Text(
-                        "Top sellers",
-                        style: TextStyle(
-                            color: Colors.grey.withOpacity(0.7),
-                            fontSize: 18.0,
-                            fontFamily: 'font2'),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Container(
+                  margin: EdgeInsets.only(right: 60),
+                  height: 84,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(left: 10, top: 10),
+                        height: 50,
+                        width: 70,
+                        child: Text(
+                          "Top sellers",
+                          style: TextStyle(
+                              color: Colors.grey.withOpacity(0.7),
+                              fontSize: 18.0,
+                              fontFamily: 'font2'),
+                        ),
                       ),
-                    ),
-                    Image.asset(
-                      "img/av1.png",
-                      height: 50,
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Image.asset(
-                      "img/av4.png",
-                      height: 50,
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Image.asset(
-                      "img/av5.png",
-                      height: 50,
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Image.asset(
-                      "img/4.png",
-                      height: 50,
-                    )
-                  ],
+                      Image.asset(
+                        "img/av1.png",
+                        height: 50,
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Image.asset(
+                        "img/av4.png",
+                        height: 50,
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Image.asset(
+                        "img/av5.png",
+                        height: 50,
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Image.asset(
+                        "img/4.png",
+                        height: 50,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -212,22 +219,192 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                         itemBuilder: (context, index) {
                           String price =
                               snapshot.data.documents[index]["price"];
-                          return Container(
-                            margin: EdgeInsets.only(left: 10, right: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12.0),
+                          _onTapImage(BuildContext context) {
+                            return Scaffold(
+                              backgroundColor: Colors.transparent,
+                              body: Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 18.0, left: 18.0),
+                                child: SingleChildScrollView(
+
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.8),
+                                        border: Border.all(
+                                          color: Colors.grey.withOpacity(0.2),
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(25))),
+                                    margin: EdgeInsets.only(top: 100),
+                                    height: 500,
+                                    width: 400,
+                                    child: Stack(
+                                      children: <Widget>[
+                                        Container(
+                                          margin: EdgeInsets.only(left: 300.0),
+                                          child: IconButton(
+                                            icon: new Icon(
+                                              Icons.close,
+                                              color: Colors.red,
+                                              size: 35.0,
+                                            ),
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(null),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: 50,
+                                          left: 42,
+                                          child: Container(
+                                              height: 50,
+                                              width: 250,
+                                              child: StreamBuilder<User>(
+                                                stream: Auth.getUser(snapshot.data
+                                                    .documents[index]["uID"]),
+                                                builder: (_, snapshot) {
+                                                  return snapshot.hasData
+                                                      ? Row(
+                                                          children: <Widget>[
+                                                            CircleAvatar(
+                                                              radius: 17.0,
+                                                              backgroundImage:
+                                                                  NetworkImage(
+                                                                      snapshot
+                                                                          .data
+                                                                          .profilePictureURL),
+                                                              backgroundColor:
+                                                                  Colors
+                                                                      .transparent,
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      top: 6.0,
+                                                                      left: 15),
+                                                              child: Text(
+                                                                snapshot.data
+                                                                    .firstName,
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                            .blueAccent[
+                                                                        400],
+                                                                    fontSize:
+                                                                        16.0,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        )
+                                                      : Container();
+                                                },
+                                              )),
+                                        ),
+                                        Positioned(
+                                          top: 100,
+                                          left: 40,
+                                          child: Container(
+                                            height: 200,
+                                            width: 300,
+                                            child: Image.network(
+                                              snapshot.data.documents[index]
+                                                  ["itemImage"],
+                                              fit: BoxFit.cover,
+                                              filterQuality: FilterQuality.high,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: 295,
+                                          left: 40,
+                                          child: Container(
+                                            margin: EdgeInsets.only(
+                                                right: 40, top: 15),
+                                            height: 20,
+                                            width: 254,
+                                            child: Text(
+                                              snapshot.data.documents[index]
+                                                  ["title"],
+                                              style:
+                                                  TextStyle(fontFamily: "font2"),
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: 328,
+                                          left: 40,
+                                          child: Container(
+                                            margin: EdgeInsets.only(right: 95),
+                                            height: 60,
+                                            width: 200,
+                                            child: Text(
+                                              snapshot.data.documents[index]
+                                                  ["description"],
+                                              style: TextStyle(
+                                                  fontFamily: "font1",
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black
+                                                      .withOpacity(0.5)),
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 130,
+                                          right: 1,
+                                          child: Container(
+                                            height: 20,
+                                            width: 80,
+                                            child: Text(
+                                              price.replaceAllMapped(
+                                                  reg, mathFunc),
+                                              style: TextStyle(
+                                                  fontFamily: "font2",
+                                                  color: Colors.red),
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                            bottom:50,
+                                            left: 40,
+                                            child: messageBox()),
+                                        Positioned(
+                                          bottom: 10,
+                                          right: 10,
+                                          child: touch(context),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
-                              child: FadeInImage.assetNetwork(
-                                placeholder: "img/img.gif",
-                                image: snapshot.data.documents[index]
-                                    ["itemImage"],
-                                fit: BoxFit.cover,
-                                fadeInCurve: Curves.easeIn,
+                            );
+                          }
+
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => _onTapImage(context));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "img/img.gif",
+                                  image: snapshot.data.documents[index]
+                                      ["itemImage"],
+                                  fit: BoxFit.cover,
+                                  fadeInCurve: Curves.easeIn,
+                                ),
                               ),
                             ),
                           );
@@ -328,7 +505,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                       )
                     : Container(
                         child: Container(
-                            margin: EdgeInsets.only(top:130, left:40),
+                            margin: EdgeInsets.only(top: 130, left: 40),
                             child: Column(
                               children: <Widget>[
                                 Container(
@@ -415,7 +592,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                       )
                     : Container(
                         child: Container(
-                            margin: EdgeInsets.only(top:130, left:40),
+                            margin: EdgeInsets.only(top: 130, left: 40),
                             child: Column(
                               children: <Widget>[
                                 Container(
@@ -504,7 +681,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                       )
                     : Container(
                         child: Container(
-                            margin: EdgeInsets.only(top:130, left:40),
+                            margin: EdgeInsets.only(top: 130, left: 40),
                             child: Column(
                               children: <Widget>[
                                 Container(
@@ -593,7 +770,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                       )
                     : Container(
                         child: Container(
-                            margin: EdgeInsets.only(top:130, left:40),
+                            margin: EdgeInsets.only(top: 130, left: 40),
                             child: Column(
                               children: <Widget>[
                                 Container(
@@ -632,6 +809,50 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                 ),
               );
       },
+    );
+  }
+
+  Widget touch(BuildContext context) {
+    return Container(
+      width: 350,
+      height: 40,
+      child: RaisedButton(
+        color: Colors.deepOrange,
+        onPressed: () {},
+        child: Text(
+          "Send Message",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+  Widget messageBox() {
+    return Container(
+
+      height:70,
+      width: 300,
+      color: Colors.transparent,
+      child: new TextFormField(
+          onChanged: (value) {
+            message = value;
+          },
+          cursorColor: Colors.red,
+          keyboardType: TextInputType.multiline,
+          maxLines: 3,
+          controller: msgcon,
+          decoration: InputDecoration.collapsed(
+            hintStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.grey.withOpacity(0.8),
+            ),
+            hintText: "Your message here",
+          ),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 22.0,
+            fontWeight: FontWeight.w600,
+          )),
     );
   }
 }
