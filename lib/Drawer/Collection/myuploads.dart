@@ -4,6 +4,7 @@ import 'package:artstore/test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class MyUpload extends StatefulWidget {
@@ -15,10 +16,23 @@ class MyUpload extends StatefulWidget {
   _MyUploadState createState() => _MyUploadState();
 }
 
-class _MyUploadState extends State<MyUpload> {
+class _MyUploadState extends State<MyUpload> with TickerProviderStateMixin {
   var timeStatus;
   RegExp reg = new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
   Function mathFunc = (Match match) => '${match[1]},';
+  TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = new TabController(vsync: this, length: 4);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   getTime() {
     DateTime now1 = DateTime.now();
@@ -42,11 +56,17 @@ class _MyUploadState extends State<MyUpload> {
           backgroundColor: Colors.transparent,
           elevation: 0.0,
           iconTheme: IconThemeData(color: Colors.black),
-          centerTitle: true,
-          title: Text(
-            "My uploads",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),
-          ),
+          leading: new Container(),
+          actions: <Widget>[
+            IconButton(
+              padding: EdgeInsets.only(right: 10),
+              icon: new Icon(
+                Icons.close,
+                size: 30.0,
+              ),
+              onPressed: () => Navigator.of(context).pop(null),
+            )
+          ],
         ),
         backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
@@ -65,11 +85,17 @@ class _MyUploadState extends State<MyUpload> {
             size: 45.0,
           ),
         ),
-        body: Column(
-          children: <Widget>[
-            user(),
-            uploads(),
-          ],
+        body: Container(
+          height: 810,
+          width: 500,
+          child: Stack(
+            children: <Widget>[
+              user(),
+              Positioned(top: 150, child: tabbar()),
+              Positioned(top: 80, left: 1, child: tabview()),
+//            uploads(),
+            ],
+          ),
         ));
   }
 
@@ -91,7 +117,7 @@ class _MyUploadState extends State<MyUpload> {
                       Text(
                         getTime(),
                         style: TextStyle(
-                            fontFamily: 'font1',
+                            fontFamily: 'font2',
                             fontWeight: FontWeight.w400,
                             fontSize: 20.0),
                       ),
@@ -122,125 +148,60 @@ class _MyUploadState extends State<MyUpload> {
           .collection("User_Data")
           .document("Upload")
           .collection("Collection")
+          .where("itemType", isEqualTo: "Art")
           .snapshots(),
       builder: (_, AsyncSnapshot snapshot) {
         return snapshot.hasData
             ? Container(
+          margin: EdgeInsets.only(right: 5.0),
                 height: DeviceSize.blockSizeVertical * 78.8,
                 child: ListView.builder(
                     itemCount: snapshot.data.documents.length,
                     itemBuilder: (BuildContext context, int i) {
                       String price = snapshot.data.documents[i]["price"];
-                      return Column(
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () {},
-                            child: Container(
-                              width: DeviceSize.blockSizeHorizontal * 95,
-                              height: DeviceSize.blockSizeVertical * 18,
-                              child: Stack(
-                                children: <Widget>[
-                                  Positioned(
-                                    top: DeviceSize.blockSizeVertical * 1.5,
-                                    child: Container(
-                                      height: DeviceSize.blockSizeVertical * 15,
-                                      width:
-                                          DeviceSize.blockSizeHorizontal * 60,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            "Product Title :",
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                          ),
-                                          SizedBox(
-                                            height:
-                                                DeviceSize.blockSizeVertical *
-                                                    .5,
-                                          ),
-                                          Container(
-                                            width: 100,
-                                            height: 16,
-                                            child: Text(
-                                              snapshot.data.documents[i]
-                                                  ["title"],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height:
-                                                DeviceSize.blockSizeVertical *
-                                                    1,
-                                          ),
-                                          Text(
-                                            "Description :",
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                          ),
-                                          SizedBox(
-                                            height: 7,
-                                          ),
-                                          Text(
-                                            snapshot.data.documents[i]
-                                                ["description"],
-                                            maxLines: 3,
-                                            style:
-                                                TextStyle(color: Colors.black),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: DeviceSize.blockSizeHorizontal * 3,
-                                    top: DeviceSize.blockSizeVertical * 1,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      child: Container(
-                                          height:
-                                              DeviceSize.blockSizeVertical * 15,
-                                          width:
-                                              DeviceSize.blockSizeVertical * 17,
-                                          child: FadeInImage.assetNetwork(
-                                            placeholder: "img/load.gif",
-                                            image: snapshot.data.documents[i]
-                                                ["itemImage"],
-                                            fadeInCurve: Curves.easeIn,
-                                            fit: BoxFit.cover,
-                                          )),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: DeviceSize.blockSizeVertical * 14,
-                                    child: Container(
-                                      padding: EdgeInsets.all(5.0),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                          color: Colors.black,
-                                        ),
-                                        borderRadius: BorderRadius.circular(2),
-                                      ),
-                                      child: Text(
-                                        price.replaceAllMapped(reg, mathFunc),
-                                        style: TextStyle(
-                                            color: Colors.green,
-                                            fontWeight: FontWeight.w800),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                      return Card(
+                        elevation: 5.0,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.white70, width: 1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
                           ),
-                          Container(
-                              width: DeviceSize.blockSizeHorizontal * 95,
-                              child: Divider(
-                                color: Colors.grey,
-                                thickness: DeviceSize.blockSizeVertical * .2,
-                              )),
-                        ],
+                          height: 230,
+                          width: 250,
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(top: 20),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.all(Radius.circular(10.0)
+                                  ),
+                                  child: Image.network(snapshot.data.documents[i]["itemImage"],height:130,width:290,fit: BoxFit.cover,filterQuality: FilterQuality.high,),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(right:29,top: 5),
+                                height:20,
+                                width: 254,
+                                child: Text(snapshot.data.documents[i]["title"],style: TextStyle(
+                                  fontFamily: "font2"
+                                ),),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(right:80,top: 5),
+                                height:50,
+                                width: 200,
+                                child: Text(snapshot.data.documents[i]["description"],style: TextStyle(
+                                    fontFamily: "font2",
+                                  color: Colors.grey
+                                ),),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     }),
               )
@@ -248,6 +209,82 @@ class _MyUploadState extends State<MyUpload> {
                 child: Container(),
               );
       },
+    );
+  }
+
+  Widget tabbar() {
+    return Container(
+      height: 450,
+      width: 60,
+      child: RotatedBox(
+        quarterTurns: 11,
+        child: DefaultTabController(
+          length: 4,
+          child: TabBar(
+            isScrollable: true,
+            dragStartBehavior: DragStartBehavior.down,
+            labelColor: Colors.black,
+            indicatorColor: Colors.white,
+            controller: _tabController,
+            unselectedLabelColor: Colors.grey.withOpacity(0.4),
+            tabs: <Widget>[
+              Tab(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text('Illustration',
+                      style: TextStyle(
+                        fontSize: 25.0,
+                      )),
+                ),
+              ),
+              Tab(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text('Craft',
+                      style: TextStyle(
+                        fontSize: 25.0,
+                      )),
+                ),
+              ),
+              Tab(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text('Paint',
+                      style: TextStyle(
+                        fontSize: 25.0,
+                      )),
+                ),
+              ),
+              Tab(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Text('Art',
+                      style: TextStyle(
+                        fontSize: 25.0,
+                      )),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget tabview() {
+    return Container(
+      width: 350,
+      margin: EdgeInsets.only(left: 60),
+      height: 730.0,
+      child: TabBarView(
+        controller: _tabController,
+        children: <Widget>[
+          uploads(),
+          Container(),
+          Container(),
+          Container(),
+        ],
+      ),
     );
   }
 }

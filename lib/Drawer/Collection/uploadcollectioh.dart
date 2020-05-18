@@ -37,7 +37,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
         leading: new Container(),
         actions: <Widget>[
           IconButton(
-            icon: new Icon(Icons.close),
+            padding: EdgeInsets.only(right: 10),
+            icon: new Icon(Icons.close,size:30.0,),
             onPressed: () => Navigator.of(context).pop(null),
           )
         ],
