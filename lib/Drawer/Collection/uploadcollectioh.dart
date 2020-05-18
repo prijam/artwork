@@ -38,7 +38,10 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
         actions: <Widget>[
           IconButton(
             padding: EdgeInsets.only(right: 10),
-            icon: new Icon(Icons.close,size:30.0,),
+            icon: new Icon(
+              Icons.close,
+              size: 30.0,
+            ),
             onPressed: () => Navigator.of(context).pop(null),
           )
         ],
@@ -69,7 +72,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Container(
-                margin: EdgeInsets.only(right:60),
+                margin: EdgeInsets.only(right: 60),
                 height: 84,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -185,7 +188,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(100.0),
               bottomRight: Radius.circular(100.0))),
-      height:610.0,
+      height: 610.0,
       child: TabBarView(
         controller: _tabController,
         children: <Widget>[explore(), art(), paint(), craft(), illu()],
@@ -200,35 +203,72 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
         return snapshot.hasData
             ? Container(
                 margin: EdgeInsets.only(top: 10),
-                child: StaggeredGridView.countBuilder(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) {
-                    String price = snapshot.data.documents[index]["price"];
-                    return Container(
-                      margin: EdgeInsets.only(left: 10, right: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.all(Radius.circular(12))),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12.0),
-                        ),
-                        child: FadeInImage.assetNetwork(
-                          placeholder: "img/img.gif",
-                          image: snapshot.data.documents[index]["itemImage"],
-                          fit: BoxFit.cover,
-                          fadeInCurve: Curves.easeIn,
-                        ),
+                child: snapshot.data.documents.length != 0
+                    ? StaggeredGridView.countBuilder(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          String price =
+                              snapshot.data.documents[index]["price"];
+                          return Container(
+                            margin: EdgeInsets.only(left: 10, right: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12))),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
+                              ),
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "img/img.gif",
+                                image: snapshot.data.documents[index]
+                                    ["itemImage"],
+                                fit: BoxFit.cover,
+                                fadeInCurve: Curves.easeIn,
+                              ),
+                            ),
+                          );
+                        },
+                        staggeredTileBuilder: (index) {
+                          return StaggeredTile.count(
+                              1, index.isEven ? 1.0 : 1.60);
+                        },
+                      )
+                    : Container(
+                        child: Container(
+                            margin: EdgeInsets.only(top: 80, left: 20),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: 70),
+                                  height: 150,
+                                  child: Image.asset(
+                                    "img/as.png",
+                                    filterQuality: FilterQuality.high,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      "Nothing to see here",
+                                      style: TextStyle(
+                                          fontFamily: "font2", fontSize: 18.0),
+                                    )),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30, top: 10),
+                                    child: Text(
+                                      "Swipe left or right to see more products",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.grey.withOpacity(0.8)),
+                                    )),
+                              ],
+                            )),
                       ),
-                    );
-                  },
-                  staggeredTileBuilder: (index) {
-                    return StaggeredTile.count(1, index.isEven ? 1.0 : 1.60);
-                  },
-                ),
               )
             : Center(
                 child: CircularProgressIndicator(
@@ -252,35 +292,72 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
         return snapshot.hasData
             ? Container(
                 margin: EdgeInsets.only(top: 10),
-                child: StaggeredGridView.countBuilder(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) {
-                    String price = snapshot.data.documents[index]["price"];
-                    return Container(
-                      margin: EdgeInsets.only(left: 10, right: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.all(Radius.circular(12))),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12.0),
-                        ),
-                        child: FadeInImage.assetNetwork(
-                          placeholder: "img/img.gif",
-                          image: snapshot.data.documents[index]["itemImage"],
-                          fit: BoxFit.cover,
-                          fadeInCurve: Curves.easeIn,
-                        ),
+                child: snapshot.data.documents.length != 0
+                    ? StaggeredGridView.countBuilder(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          String price =
+                              snapshot.data.documents[index]["price"];
+                          return Container(
+                            margin: EdgeInsets.only(left: 10, right: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12))),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
+                              ),
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "img/img.gif",
+                                image: snapshot.data.documents[index]
+                                    ["itemImage"],
+                                fit: BoxFit.cover,
+                                fadeInCurve: Curves.easeIn,
+                              ),
+                            ),
+                          );
+                        },
+                        staggeredTileBuilder: (index) {
+                          return StaggeredTile.count(
+                              1, index.isEven ? 1.0 : 1.60);
+                        },
+                      )
+                    : Container(
+                        child: Container(
+                            margin: EdgeInsets.only(top:130, left:40),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: 70),
+                                  height: 150,
+                                  child: Image.asset(
+                                    "img/as.png",
+                                    filterQuality: FilterQuality.high,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      "Nothing to see here",
+                                      style: TextStyle(
+                                          fontFamily: "font2", fontSize: 18.0),
+                                    )),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30, top: 10),
+                                    child: Text(
+                                      "Swipe left or right to see more products",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.grey.withOpacity(0.8)),
+                                    )),
+                              ],
+                            )),
                       ),
-                    );
-                  },
-                  staggeredTileBuilder: (index) {
-                    return StaggeredTile.count(1, index.isEven ? 1.0 : 1.60);
-                  },
-                ),
               )
             : Center(
                 child: CircularProgressIndicator(
@@ -304,34 +381,70 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
         return snapshot.hasData
             ? Container(
                 margin: EdgeInsets.only(top: 10),
-                child: StaggeredGridView.countBuilder(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.only(left: 10, right: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.all(Radius.circular(12))),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12.0),
-                        ),
-                        child: FadeInImage.assetNetwork(
-                          placeholder: "img/img.gif",
-                          image: snapshot.data.documents[index]["itemImage"],
-                          fit: BoxFit.cover,
-                          fadeInCurve: Curves.easeIn,
-                        ),
+                child: snapshot.data.documents.length != 0
+                    ? StaggeredGridView.countBuilder(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: EdgeInsets.only(left: 10, right: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12))),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
+                              ),
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "img/img.gif",
+                                image: snapshot.data.documents[index]
+                                    ["itemImage"],
+                                fit: BoxFit.cover,
+                                fadeInCurve: Curves.easeIn,
+                              ),
+                            ),
+                          );
+                        },
+                        staggeredTileBuilder: (index) {
+                          return StaggeredTile.count(
+                              1, index.isEven ? 1.0 : 1.60);
+                        },
+                      )
+                    : Container(
+                        child: Container(
+                            margin: EdgeInsets.only(top:130, left:40),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: 70),
+                                  height: 150,
+                                  child: Image.asset(
+                                    "img/as.png",
+                                    filterQuality: FilterQuality.high,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      "Nothing to see here",
+                                      style: TextStyle(
+                                          fontFamily: "font2", fontSize: 18.0),
+                                    )),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30, top: 10),
+                                    child: Text(
+                                      "Swipe left or right to see more products",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.grey.withOpacity(0.8)),
+                                    )),
+                              ],
+                            )),
                       ),
-                    );
-                  },
-                  staggeredTileBuilder: (index) {
-                    return StaggeredTile.count(1, index.isEven ? 1.0 : 1.60);
-                  },
-                ),
               )
             : Center(
                 child: CircularProgressIndicator(
@@ -355,35 +468,72 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
         return snapshot.hasData
             ? Container(
                 margin: EdgeInsets.only(top: 10),
-                child: StaggeredGridView.countBuilder(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) {
-                    String price = snapshot.data.documents[index]["price"];
-                    return Container(
-                      margin: EdgeInsets.only(left: 10, right: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.all(Radius.circular(12))),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12.0),
-                        ),
-                        child: FadeInImage.assetNetwork(
-                          placeholder: "img/img.gif",
-                          image: snapshot.data.documents[index]["itemImage"],
-                          fit: BoxFit.cover,
-                          fadeInCurve: Curves.easeIn,
-                        ),
+                child: snapshot.data.documents.length != 0
+                    ? StaggeredGridView.countBuilder(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          String price =
+                              snapshot.data.documents[index]["price"];
+                          return Container(
+                            margin: EdgeInsets.only(left: 10, right: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12))),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
+                              ),
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "img/img.gif",
+                                image: snapshot.data.documents[index]
+                                    ["itemImage"],
+                                fit: BoxFit.cover,
+                                fadeInCurve: Curves.easeIn,
+                              ),
+                            ),
+                          );
+                        },
+                        staggeredTileBuilder: (index) {
+                          return StaggeredTile.count(
+                              1, index.isEven ? 1.0 : 1.60);
+                        },
+                      )
+                    : Container(
+                        child: Container(
+                            margin: EdgeInsets.only(top:130, left:40),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: 70),
+                                  height: 150,
+                                  child: Image.asset(
+                                    "img/as.png",
+                                    filterQuality: FilterQuality.high,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      "Nothing to see here",
+                                      style: TextStyle(
+                                          fontFamily: "font2", fontSize: 18.0),
+                                    )),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30, top: 10),
+                                    child: Text(
+                                      "Swipe left or right to see more products",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.grey.withOpacity(0.8)),
+                                    )),
+                              ],
+                            )),
                       ),
-                    );
-                  },
-                  staggeredTileBuilder: (index) {
-                    return StaggeredTile.count(1, index.isEven ? 1.0 : 1.60);
-                  },
-                ),
               )
             : Center(
                 child: CircularProgressIndicator(
@@ -407,35 +557,72 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
         return snapshot.hasData
             ? Container(
                 margin: EdgeInsets.only(top: 10),
-                child: StaggeredGridView.countBuilder(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) {
-                    String price = snapshot.data.documents[index]["price"];
-                    return Container(
-                      margin: EdgeInsets.only(left: 10, right: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.all(Radius.circular(12))),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12.0),
-                        ),
-                        child: FadeInImage.assetNetwork(
-                          placeholder: "img/img.gif",
-                          image: snapshot.data.documents[index]["itemImage"],
-                          fit: BoxFit.cover,
-                          fadeInCurve: Curves.easeIn,
-                        ),
+                child: snapshot.data.documents.length != 0
+                    ? StaggeredGridView.countBuilder(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          String price =
+                              snapshot.data.documents[index]["price"];
+                          return Container(
+                            margin: EdgeInsets.only(left: 10, right: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12))),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
+                              ),
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "img/img.gif",
+                                image: snapshot.data.documents[index]
+                                    ["itemImage"],
+                                fit: BoxFit.cover,
+                                fadeInCurve: Curves.easeIn,
+                              ),
+                            ),
+                          );
+                        },
+                        staggeredTileBuilder: (index) {
+                          return StaggeredTile.count(
+                              1, index.isEven ? 1.0 : 1.60);
+                        },
+                      )
+                    : Container(
+                        child: Container(
+                            margin: EdgeInsets.only(top:130, left:40),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: 70),
+                                  height: 150,
+                                  child: Image.asset(
+                                    "img/as.png",
+                                    filterQuality: FilterQuality.high,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      "Nothing to see here",
+                                      style: TextStyle(
+                                          fontFamily: "font2", fontSize: 18.0),
+                                    )),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30, top: 10),
+                                    child: Text(
+                                      "Swipe left or right to see more products",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.grey.withOpacity(0.8)),
+                                    )),
+                              ],
+                            )),
                       ),
-                    );
-                  },
-                  staggeredTileBuilder: (index) {
-                    return StaggeredTile.count(1, index.isEven ? 1.0 : 1.60);
-                  },
-                ),
               )
             : Center(
                 child: CircularProgressIndicator(

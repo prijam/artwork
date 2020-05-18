@@ -140,78 +140,6 @@ class _MyUploadState extends State<MyUpload> with TickerProviderStateMixin {
         ));
   }
 
-  Widget uploads() {
-    return StreamBuilder(
-      stream: Firestore.instance
-          .collection("users")
-          .document(widget.firebaseUser.uid)
-          .collection("User_Data")
-          .document("Upload")
-          .collection("Collection")
-          .where("itemType", isEqualTo: "Art")
-          .snapshots(),
-      builder: (_, AsyncSnapshot snapshot) {
-        return snapshot.hasData
-            ? Container(
-          margin: EdgeInsets.only(right: 5.0),
-                height: DeviceSize.blockSizeVertical * 78.8,
-                child: ListView.builder(
-                    itemCount: snapshot.data.documents.length,
-                    itemBuilder: (BuildContext context, int i) {
-                      String price = snapshot.data.documents[i]["price"];
-                      return Card(
-                        elevation: 5.0,
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.white70, width: 1),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                          ),
-                          height: 230,
-                          width: 250,
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                margin: EdgeInsets.only(top: 20),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0)
-                                  ),
-                                  child: Image.network(snapshot.data.documents[i]["itemImage"],height:130,width:290,fit: BoxFit.cover,filterQuality: FilterQuality.high,),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right:29,top: 5),
-                                height:20,
-                                width: 254,
-                                child: Text(snapshot.data.documents[i]["title"],style: TextStyle(
-                                  fontFamily: "font2"
-                                ),),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right:80,top: 5),
-                                height:50,
-                                width: 200,
-                                child: Text(snapshot.data.documents[i]["description"],style: TextStyle(
-                                    fontFamily: "font2",
-                                  color: Colors.grey
-                                ),),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-              )
-            : Center(
-                child: Container(),
-              );
-      },
-    );
-  }
-
   Widget tabbar() {
     return Container(
       height: 450,
@@ -231,7 +159,7 @@ class _MyUploadState extends State<MyUpload> with TickerProviderStateMixin {
               Tab(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
-                  child: Text('Illustration',
+                  child: Text('Art',
                       style: TextStyle(
                         fontSize: 25.0,
                       )),
@@ -258,7 +186,7 @@ class _MyUploadState extends State<MyUpload> with TickerProviderStateMixin {
               Tab(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
-                  child: Text('Art',
+                  child: Text('Illustration',
                       style: TextStyle(
                         fontSize: 25.0,
                       )),
@@ -279,12 +207,488 @@ class _MyUploadState extends State<MyUpload> with TickerProviderStateMixin {
       child: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          uploads(),
-          Container(),
-          Container(),
-          Container(),
+          artTab(),
+          craftTab(),
+          paintTab(),
+          illustrationTab(),
         ],
       ),
+    );
+  }
+
+  Widget artTab() {
+    return StreamBuilder(
+      stream: Firestore.instance
+          .collection("users")
+          .document(widget.firebaseUser.uid)
+          .collection("User_Data")
+          .document("Upload")
+          .collection("Collection")
+          .where("itemType", isEqualTo: "Art")
+          .snapshots(),
+      builder: (_, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? Container(
+                margin: EdgeInsets.only(right: 5.0),
+                height: DeviceSize.blockSizeVertical * 78.8,
+                child: ListView.builder(
+                    itemCount: snapshot.data.documents.length,
+                    itemBuilder: (BuildContext context, int i) {
+                      String price = snapshot.data.documents[i]["price"];
+                      return Card(
+                        elevation: 5.0,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.white70, width: 1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          height: 230,
+                          width: 250,
+                          child: Stack(
+                            children: <Widget>[
+                              Positioned(
+                                top: 10,
+                                left: 22,
+                                child: Container(
+                                  child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10.0)),
+                                    child: Image.network(
+                                      snapshot.data.documents[i]["itemImage"],
+                                      height: 130,
+                                      width: 290,
+                                      fit: BoxFit.cover,
+                                      filterQuality: FilterQuality.high,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 65,
+                                left: 22,
+                                child: Container(
+                                  margin: EdgeInsets.only(right: 29, top: 5),
+                                  height: 20,
+                                  width: 254,
+                                  child: Text(
+                                    snapshot.data.documents[i]["title"],
+                                    style: TextStyle(fontFamily: "font2"),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 5,
+                                left: 22,
+                                child: Container(
+                                  margin: EdgeInsets.only(right: 80, top: 5),
+                                  height: 60,
+                                  width: 200,
+                                  child: Text(
+                                    snapshot.data.documents[i]["description"],
+                                    style: TextStyle(
+                                        fontFamily: "font1",
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey.withOpacity(0.8)),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 10,
+                                right: 1,
+                                child: Container(
+                                  height: 20,
+                                  width: 80,
+                                  child: Text(
+                                    price.replaceAllMapped(reg, mathFunc),
+                                    style: TextStyle(
+                                        fontFamily: "font2", color: Colors.red),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+              )
+            : Center(
+                child: Container(),
+              );
+      },
+    );
+  }
+
+  Widget craftTab() {
+    return StreamBuilder(
+      stream: Firestore.instance
+          .collection("users")
+          .document(widget.firebaseUser.uid)
+          .collection("User_Data")
+          .document("Upload")
+          .collection("Collection")
+          .where("itemType", isEqualTo: "Craft")
+          .snapshots(),
+      builder: (_, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? Container(
+                margin: EdgeInsets.only(right: 5.0),
+                height: DeviceSize.blockSizeVertical * 78.8,
+                child: Container(
+                  child: snapshot.data.documents.length != 0
+                      ? ListView.builder(
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (BuildContext context, int i) {
+                            String price = snapshot.data.documents[i]["price"];
+                            return Card(
+                              elevation: 5.0,
+                              shape: RoundedRectangleBorder(
+                                side:
+                                    BorderSide(color: Colors.white70, width: 1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                ),
+                                height: 230,
+                                width: 250,
+                                child: Stack(
+                                  children: <Widget>[
+                                    Positioned(
+                                      top: 10,
+                                      left: 22,
+                                      child: Container(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0)),
+                                          child: Image.network(
+                                            snapshot.data.documents[i]
+                                                ["itemImage"],
+                                            height: 130,
+                                            width: 290,
+                                            fit: BoxFit.cover,
+                                            filterQuality: FilterQuality.high,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 65,
+                                      left: 22,
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.only(right: 29, top: 5),
+                                        height: 20,
+                                        width: 254,
+                                        child: Text(
+                                          snapshot.data.documents[i]["title"],
+                                          style: TextStyle(fontFamily: "font2"),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 5,
+                                      left: 22,
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.only(right: 80, top: 5),
+                                        height: 60,
+                                        width: 200,
+                                        child: Text(
+                                          snapshot.data.documents[i]
+                                              ["description"],
+                                          style: TextStyle(
+                                              fontFamily: "font1",
+                                              fontWeight: FontWeight.w600,
+                                              color:
+                                                  Colors.grey.withOpacity(0.8)),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 10,
+                                      right: 1,
+                                      child: Container(
+                                        height: 20,
+                                        width: 80,
+                                        child: Text(
+                                          price.replaceAllMapped(reg, mathFunc),
+                                          style: TextStyle(
+                                              fontFamily: "font2",
+                                              color: Colors.red),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          })
+                      : Container(
+                          margin: EdgeInsets.only(bottom: 150),
+                          child: Image.asset(
+                            "img/emp.png",
+                            filterQuality: FilterQuality.high,
+                            fit: BoxFit.contain,
+                          )),
+                ))
+            : Center(
+                child: Container(),
+              );
+      },
+    );
+  }
+
+  Widget paintTab() {
+    return StreamBuilder(
+      stream: Firestore.instance
+          .collection("users")
+          .document(widget.firebaseUser.uid)
+          .collection("User_Data")
+          .document("Upload")
+          .collection("Collection")
+          .where("itemType", isEqualTo: "Paint")
+          .snapshots(),
+      builder: (_, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? Container(
+                margin: EdgeInsets.only(right: 5.0),
+                height: DeviceSize.blockSizeVertical * 78.8,
+                child: snapshot.data.documents.length != 0
+                    ? ListView.builder(
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (BuildContext context, int i) {
+                          String price = snapshot.data.documents[i]["price"];
+                          return Card(
+                            elevation: 5.0,
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.white70, width: 1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              height: 230,
+                              width: 250,
+                              child: Stack(
+                                children: <Widget>[
+                                  Positioned(
+                                    top: 10,
+                                    left: 22,
+                                    child: Container(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10.0)),
+                                        child: Image.network(
+                                          snapshot.data.documents[i]
+                                              ["itemImage"],
+                                          height: 130,
+                                          width: 290,
+                                          fit: BoxFit.cover,
+                                          filterQuality: FilterQuality.high,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 65,
+                                    left: 22,
+                                    child: Container(
+                                      margin:
+                                          EdgeInsets.only(right: 29, top: 5),
+                                      height: 20,
+                                      width: 254,
+                                      child: Text(
+                                        snapshot.data.documents[i]["title"],
+                                        style: TextStyle(fontFamily: "font2"),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 5,
+                                    left: 22,
+                                    child: Container(
+                                      margin:
+                                          EdgeInsets.only(right: 80, top: 5),
+                                      height: 60,
+                                      width: 200,
+                                      child: Text(
+                                        snapshot.data.documents[i]
+                                            ["description"],
+                                        style: TextStyle(
+                                            fontFamily: "font1",
+                                            fontWeight: FontWeight.w600,
+                                            color:
+                                                Colors.grey.withOpacity(0.8)),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 10,
+                                    right: 1,
+                                    child: Container(
+                                      height: 20,
+                                      width: 80,
+                                      child: Text(
+                                        price.replaceFirstMapped(reg, mathFunc),
+                                        style: TextStyle(
+                                            fontFamily: "font2",
+                                            color: Colors.red),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        })
+                    : Container(
+                        margin: EdgeInsets.only(bottom: 150),
+                        child: Image.asset(
+                          "img/emp.png",
+                          filterQuality: FilterQuality.high,
+                          fit: BoxFit.contain,
+                        )),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(212, 20, 15, 1.0),
+                  ),
+                ),
+              );
+      },
+    );
+  }
+
+  Widget illustrationTab() {
+    return StreamBuilder(
+      stream: Firestore.instance
+          .collection("users")
+          .document(widget.firebaseUser.uid)
+          .collection("User_Data")
+          .document("Upload")
+          .collection("Collection")
+          .where("itemType", isEqualTo: "Illustration")
+          .snapshots(),
+      builder: (_, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? Container(
+                margin: EdgeInsets.only(right: 5.0),
+                height: DeviceSize.blockSizeVertical * 78.8,
+                child: snapshot.data.documents.length != 0
+                    ? ListView.builder(
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (BuildContext context, int i) {
+                          String price = snapshot.data.documents[i]["price"];
+                          return Card(
+                            elevation: 5.0,
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(color: Colors.white70, width: 1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              height: 230,
+                              width: 250,
+                              child: Stack(
+                                children: <Widget>[
+                                  Positioned(
+                                    top: 10,
+                                    left: 22,
+                                    child: Container(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10.0)),
+                                        child: Image.network(
+                                          snapshot.data.documents[i]
+                                              ["itemImage"],
+                                          height: 130,
+                                          width: 290,
+                                          fit: BoxFit.cover,
+                                          filterQuality: FilterQuality.high,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 65,
+                                    left: 22,
+                                    child: Container(
+                                      margin:
+                                          EdgeInsets.only(right: 29, top: 5),
+                                      height: 20,
+                                      width: 254,
+                                      child: Text(
+                                        snapshot.data.documents[i]["title"],
+                                        style: TextStyle(fontFamily: "font2"),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 5,
+                                    left: 22,
+                                    child: Container(
+                                      margin:
+                                          EdgeInsets.only(right: 80, top: 5),
+                                      height: 60,
+                                      width: 200,
+                                      child: Text(
+                                        snapshot.data.documents[i]
+                                            ["description"],
+                                        style: TextStyle(
+                                            fontFamily: "font1",
+                                            fontWeight: FontWeight.w600,
+                                            color:
+                                                Colors.grey.withOpacity(0.8)),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 10,
+                                    right: 1,
+                                    child: Container(
+                                      height: 20,
+                                      width: 80,
+                                      child: Text(
+                                        price.replaceFirstMapped(reg, mathFunc),
+                                        style: TextStyle(
+                                            fontFamily: "font2",
+                                            color: Colors.red),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        })
+                    : Container(
+                        margin: EdgeInsets.only(bottom: 150),
+                        child: Image.asset(
+                          "img/emp.png",
+                          filterQuality: FilterQuality.high,
+                          fit: BoxFit.contain,
+                        )),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(212, 20, 15, 1.0),
+                  ),
+                ),
+              );
+      },
     );
   }
 }

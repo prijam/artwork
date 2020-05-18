@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     builder: (_, snapshot) {
                       return snapshot.hasData
                           ? CircleAvatar(
-                              radius: 17.0,
+                              radius: 15.0,
                               backgroundImage:
                                   NetworkImage(snapshot.data.profilePictureURL),
                               backgroundColor: Colors.transparent,
