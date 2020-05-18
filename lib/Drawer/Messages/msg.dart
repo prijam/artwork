@@ -15,6 +15,7 @@ class _MessageListState extends State<MessageList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         brightness: Brightness.light,
         backgroundColor: Colors.transparent,
@@ -88,38 +89,73 @@ class _MessageListState extends State<MessageList> {
       body: Column(
         children: <Widget>[
           firstTab(),
+          SizedBox(
+            height: 20,
+          ),
+          Divider(),
+          SizedBox(
+            height: 20,
+          ),
+          body()
         ],
       ),
     );
   }
-  Widget firstTab(){
-    return  Container(
-      margin: EdgeInsets.only(left:30,top:25),
+
+  Widget firstTab() {
+    return Container(
+      margin: EdgeInsets.only(left: 35, top: 25),
       decoration: new BoxDecoration(
-        border: Border.all(color: Colors.black, width: 0.0),
-        borderRadius:
-        new BorderRadius.all(Radius.circular(15.0)),
+        border: Border.all(color: Colors.grey.withOpacity(0.8), width: 0.0),
+        borderRadius: new BorderRadius.all(Radius.circular(15.0)),
       ),
       width: 350,
-      height:50,
+      height: 50,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Padding(
               padding: EdgeInsets.only(left: 20),
-              child: Text("All messages",style: TextStyle(
-                fontFamily: "font1",
-                fontSize: 18.0
-              ),)),
+              child: Text(
+                "All messages",
+                style: TextStyle(fontFamily: "font1", fontSize: 18.0),
+              )),
           Padding(
-            padding: EdgeInsets.only(right:10),
+            padding: EdgeInsets.only(right: 10),
             child: Icon(
-              Icons.arrow_drop_down,
+              Icons.keyboard_arrow_down,
               color: Colors.grey,
-              size: 16,
+              size: 30,
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget body() {
+    return Container(
+      height: 673,
+      width: 350,
+      child: StreamBuilder(
+        stream: Firestore.instance
+            .collection("users")
+            .document(widget.firebaseUser.uid)
+            .collection("User_Data")
+            .document("Messages")
+            .collection("Inbox")
+            .snapshots(),
+        builder: (_, snapshot) {
+          return snapshot.hasData
+              ? ListView.builder(itemCount: snapshot.data.documents.length,itemBuilder: (_, index) {
+                return Container(
+                  height: 50,
+                  width: 250,
+                  child: Text(snapshot.data.documents[index]["message"]),
+                );
+          })
+              : Container();
+        },
       ),
     );
   }
