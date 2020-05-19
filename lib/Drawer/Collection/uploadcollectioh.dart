@@ -232,12 +232,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                           String price =
                               snapshot.data.documents[index]["price"];
                           _onTapImage(BuildContext context) {
-                            DocumentReference documentReference = Firestore
-                                .instance
-                                .collection('explore')
-                                .document();
                             Future _sendMsg(BuildContext context) async {
-                              print("Entering firebase");
                               Firestore.instance
                                   .collection("users")
                                   .document(
@@ -251,7 +246,10 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                 "senderID": widget.firebaseUser.uid,
                                 "sendDate&Time": now,
                                 "buyerPrice": _price,
-                                "docID": documentReference.documentID,
+                                "itemImage": snapshot.data.documents[index]
+                                    ["itemImage"],
+                                "title":snapshot.data.documents[index]
+                                ["title"],
                               }).whenComplete(() {
                                 msgcon.clear();
                                 Navigator.of(context).pop();

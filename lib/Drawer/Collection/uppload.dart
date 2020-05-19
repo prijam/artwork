@@ -52,14 +52,14 @@ class _UploadState extends State<Upload> {
       StorageUploadTask uploadTask = fireBaseStorageRef.putFile(_image);
       StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      Firestore.instance
+      DocumentReference documentReference =Firestore.instance
           .collection("users")
           .document(widget.firebaseUser.uid)
           .collection("User_Data")
           .document("Upload")
           .collection("Collection")
-          .document()
-          .setData({
+          .document();
+          documentReference.setData({
             "title": _title,
             "description": _desc,
             "price": _price,
