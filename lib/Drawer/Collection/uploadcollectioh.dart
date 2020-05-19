@@ -23,6 +23,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
   Function mathFunc = (Match match) => '${match[1]},';
   String message = "";
   TextEditingController msgcon = TextEditingController();
+  String _price = "";
+  TextEditingController _pri = TextEditingController();
   DateTime now = new DateTime.now();
 
   @override
@@ -213,8 +215,9 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
   }
 
   Widget explore() {
+    var path = Firestore.instance.collection("explore").snapshots();
     return StreamBuilder(
-      stream: Firestore.instance.collection("explore").snapshots(),
+      stream: path,
       builder: (_, snapshot) {
         return snapshot.hasData
             ? Container(
@@ -229,6 +232,10 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                           String price =
                               snapshot.data.documents[index]["price"];
                           _onTapImage(BuildContext context) {
+                            DocumentReference documentReference = Firestore
+                                .instance
+                                .collection('explore')
+                                .document();
                             Future _sendMsg(BuildContext context) async {
                               print("Entering firebase");
                               Firestore.instance
@@ -243,6 +250,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                 "message": message,
                                 "senderID": widget.firebaseUser.uid,
                                 "sendDate&Time": now,
+                                "buyerPrice": _price,
+                                "docID": documentReference.documentID,
                               }).whenComplete(() {
                                 msgcon.clear();
                                 Navigator.of(context).pop();
@@ -257,7 +266,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                 child: SingleChildScrollView(
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.8),
+                                        color: Colors.white,
                                         border: Border.all(
                                           color: Colors.grey.withOpacity(0.2),
                                         ),
@@ -278,6 +287,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                               ),
                                               onPressed: () {
                                                 msgcon.clear();
+                                                _pri.clear();
                                                 Navigator.of(context).pop(null);
                                               }),
                                         ),
@@ -381,7 +391,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                           ),
                                         ),
                                         Positioned(
-                                          bottom: 130,
+                                          bottom: 160,
                                           right: 1,
                                           child: Container(
                                             height: 20,
@@ -396,6 +406,19 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                           ),
                                         ),
                                         Positioned(
+                                          bottom: 140,
+                                          right: 2,
+                                          child: Container(
+                                            height: 18,
+                                            width: 80,
+                                            child: Text("Your price"),
+                                          ),
+                                        ),
+                                        Positioned(
+                                            bottom: 132,
+                                            right: -19,
+                                            child: pri()),
+                                        Positioned(
                                             bottom: 50,
                                             left: 40,
                                             child: messageBox()),
@@ -408,7 +431,6 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                             child: RaisedButton(
                                               color: Colors.deepOrange,
                                               onPressed: () {
-                                                print("dfsdfs");
                                                 _sendMsg(context);
                                               },
                                               child: Text(
@@ -882,6 +904,35 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
             color: Colors.black,
             fontSize: 18.0,
             fontWeight: FontWeight.w300,
+          )),
+    );
+  }
+
+  Widget pri() {
+    return Container(
+      height: 20,
+      width: 100,
+      margin: EdgeInsets.only(left: 15),
+      color: Colors.transparent,
+      child: new TextFormField(
+          onChanged: (value) {
+            _price = value;
+          },
+          cursorColor: Colors.red,
+          controller: _pri..text = "Rs.".replaceAllMapped(reg, mathFunc),
+          keyboardType: TextInputType.number,
+          cursorWidth: 2.0,
+          decoration: InputDecoration.collapsed(
+            hintStyle: TextStyle(
+              fontSize: 15,
+              color: Colors.grey.withOpacity(0.8),
+            ),
+            hintText: "Your Price",
+          ),
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.8),
+            fontSize: 15.0,
+            fontWeight: FontWeight.bold,
           )),
     );
   }

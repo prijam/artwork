@@ -15,6 +15,9 @@ class MessageList extends StatefulWidget {
 }
 
 class _MessageListState extends State<MessageList> {
+  RegExp reg = new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+  Function mathFunc = (Match match) => '${match[1]},';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,50 +156,71 @@ class _MessageListState extends State<MessageList> {
               ? ListView.builder(
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (_, index) {
+
                     return Container(
-                      height:100,
-                      width: 250,
-                      child: Stack(
-                        children: <Widget>[
-                          StreamBuilder<User>(
-                            stream:
-                            Auth.getUser(snapshot.data.documents[index]["senderID"]),
-                            builder: (_, snapshot) {
-                              return snapshot.hasData
-                                  ? Row(
-                                children: <Widget>[
-                                  Container(
-                                    margin: EdgeInsets.only(left: 20,bottom: 10),
-                                    child: CircleAvatar(
-                                      radius:22.0,
-                                      backgroundImage: NetworkImage(
-                                          snapshot.data.profilePictureURL),
-                                      backgroundColor: Colors.transparent,
-                                    ),
-                                  ),
-                                  Container(
-                                      margin:EdgeInsets.only(bottom:30,left:14),
-                                      child: Text(snapshot.data.firstName,style: TextStyle(
-                                        color: Colors.blueGrey,fontFamily: 'font2'
-                                      ),))
-                                ],
-                              )
-                                  : Container();
-                            },
-                          ),
-                          Positioned(
-                              top:22,
-                              left:78,
-                              child: Container(
-                                  height: 40,
-                                  width: 250,
-                                  child: Text(snapshot.data.documents[index]["message"],style: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.w800
-                                  ),))),
-                        ],
-                      )
-                    );
+                        height: 100,
+                        width: 250,
+                        child: Stack(
+                          children: <Widget>[
+                            StreamBuilder<User>(
+                              stream: Auth.getUser(
+                                  snapshot.data.documents[index]["senderID"]),
+                              builder: (_, snapshot) {
+                                return snapshot.hasData
+                                    ? Row(
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(
+                                                left: 20, bottom: 10),
+                                            child: CircleAvatar(
+                                              radius: 22.0,
+                                              backgroundImage: NetworkImage(
+                                                  snapshot
+                                                      .data.profilePictureURL),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                            ),
+                                          ),
+                                          Container(
+                                              margin: EdgeInsets.only(
+                                                  bottom: 30, left: 14),
+                                              child: Text(
+                                                snapshot.data.firstName,
+                                                style: TextStyle(
+                                                    color: Colors.blueGrey,
+                                                    fontFamily: 'font2'),
+                                              ))
+                                        ],
+                                      )
+                                    : Container();
+                              },
+                            ),
+                            Positioned(
+                                top: 1,
+                                left:200,
+                                child: Container(
+                                    height: 40,
+                                    width: 250,
+                                    child: Text(
+                                      snapshot.data.documents[index]["buyerPrice"],
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w800),
+                                    ))),
+                            Positioned(
+                                top: 22,
+                                left: 78,
+                                child: Container(
+                                    height: 40,
+                                    width: 250,
+                                    child: Text(
+                                      snapshot.data.documents[index]["message"],
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w800),
+                                    ))),
+                          ],
+                        ));
                   })
               : Container();
         },
