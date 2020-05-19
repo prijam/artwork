@@ -1,5 +1,8 @@
+import 'package:artstore/firebaseHandler/auth.dart';
+import 'package:artstore/firebaseHandler/userModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MessageList extends StatefulWidget {
@@ -147,13 +150,54 @@ class _MessageListState extends State<MessageList> {
             .snapshots(),
         builder: (_, snapshot) {
           return snapshot.hasData
-              ? ListView.builder(itemCount: snapshot.data.documents.length,itemBuilder: (_, index) {
-                return Container(
-                  height: 50,
-                  width: 250,
-                  child: Text(snapshot.data.documents[index]["message"]),
-                );
-          })
+              ? ListView.builder(
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (_, index) {
+                    return Container(
+                      height:100,
+                      width: 250,
+                      child: Stack(
+                        children: <Widget>[
+                          StreamBuilder<User>(
+                            stream:
+                            Auth.getUser(snapshot.data.documents[index]["senderID"]),
+                            builder: (_, snapshot) {
+                              return snapshot.hasData
+                                  ? Row(
+                                children: <Widget>[
+                                  Container(
+                                    margin: EdgeInsets.only(left: 20,bottom: 10),
+                                    child: CircleAvatar(
+                                      radius:22.0,
+                                      backgroundImage: NetworkImage(
+                                          snapshot.data.profilePictureURL),
+                                      backgroundColor: Colors.transparent,
+                                    ),
+                                  ),
+                                  Container(
+                                      margin:EdgeInsets.only(bottom:30,left:14),
+                                      child: Text(snapshot.data.firstName,style: TextStyle(
+                                        color: Colors.blueGrey,fontFamily: 'font2'
+                                      ),))
+                                ],
+                              )
+                                  : Container();
+                            },
+                          ),
+                          Positioned(
+                              top:22,
+                              left:78,
+                              child: Container(
+                                  height: 40,
+                                  width: 250,
+                                  child: Text(snapshot.data.documents[index]["message"],style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w800
+                                  ),))),
+                        ],
+                      )
+                    );
+                  })
               : Container();
         },
       ),

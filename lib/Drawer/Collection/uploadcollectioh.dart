@@ -23,6 +23,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
   Function mathFunc = (Match match) => '${match[1]},';
   String message = "";
   TextEditingController msgcon = TextEditingController();
+  DateTime now = new DateTime.now();
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    print(now);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -239,7 +241,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                   .document()
                                   .setData({
                                 "message": message,
-                                "senderID": widget.firebaseUser.uid
+                                "senderID": widget.firebaseUser.uid,
+                                "sendDate&Time": now,
                               }).whenComplete(() {
                                 msgcon.clear();
                                 Navigator.of(context).pop();
