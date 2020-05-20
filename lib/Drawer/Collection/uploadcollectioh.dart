@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_svg/svg.dart';
 
 class Collection extends StatefulWidget {
   final FirebaseUser firebaseUser;
@@ -27,8 +28,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
   TextEditingController _pri = TextEditingController();
   DateTime now = new DateTime.now();
 
-  Future _sendMsg(
-      BuildContext context, AsyncSnapshot snapshot, int index) async {
+  Future _sendMsg(BuildContext context, AsyncSnapshot snapshot,
+      int index) async {
     Firestore.instance
         .collection("users")
         .document(snapshot.data.documents[index]["uID"])
@@ -97,27 +98,27 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                               builder: (_, snapshot) {
                                 return snapshot.hasData
                                     ? Row(
-                                        children: <Widget>[
-                                          CircleAvatar(
-                                            radius: 17.0,
-                                            backgroundImage: NetworkImage(
-                                                snapshot
-                                                    .data.profilePictureURL),
-                                            backgroundColor: Colors.transparent,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 6.0, left: 15),
-                                            child: Text(
-                                              snapshot.data.firstName,
-                                              style: TextStyle(
-                                                  color: Colors.blueAccent[400],
-                                                  fontSize: 16.0,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                          )
-                                        ],
-                                      )
+                                  children: <Widget>[
+                                    CircleAvatar(
+                                      radius: 17.0,
+                                      backgroundImage: NetworkImage(
+                                          snapshot
+                                              .data.profilePictureURL),
+                                      backgroundColor: Colors.transparent,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 6.0, left: 15),
+                                      child: Text(
+                                        snapshot.data.firstName,
+                                        style: TextStyle(
+                                            color: Colors.blueAccent[400],
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    )
+                                  ],
+                                )
                                     : Container();
                               },
                             )),
@@ -252,27 +253,12 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       ),
       body: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
-        child:Container(
-          color: Colors.red,
+        child: Container(
           height: 1000,
           child: Stack(
             children: <Widget>[
               tabbar(),
-              Positioned(
-                  top:40,
-                  child: tabview()),
-              Positioned(
-                top:650,
-                child: ClipPath(
-                  clipper: SideCutClipper(),
-                  child: Container(
-                    height: 155,
-                    width:412,
-                    color: Colors.black,
-                  ),
-                ),
-              )
-
+              Positioned(top: 40, child: tabview()),
             ],
           ),
         ),
@@ -339,8 +325,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
 
   Widget tabview() {
     return Container(
-      height:760.0,
-      width:400,
+      height: 760.0,
+      width: 400,
       child: TabBarView(
         controller: _tabController,
         children: <Widget>[explore(), art(), paint(), craft(), illu()],
@@ -355,88 +341,86 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       builder: (_, snapshot) {
         return snapshot.hasData
             ? Container(
-                margin: EdgeInsets.only(top: 10),
-                child: snapshot.data.documents.length != 0
-                    ? StaggeredGridView.countBuilder(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 13,
-                        itemCount: snapshot.data.documents.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (
-                                    context,
-                                  ) =>
-                                      _onTapImage(context, snapshot));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(left: 10, right: 10),
-                              decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12.0),
-                                ),
-                                child: FadeInImage.assetNetwork(
-                                  placeholder: "img/img.gif",
-                                  image: snapshot.data.documents[index]
-                                      ["itemImage"],
-                                  fit: BoxFit.cover,
-                                  fadeInCurve: Curves.easeIn,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        staggeredTileBuilder: (index) {
-                          return StaggeredTile.count(
-                              1, index.isEven ? 1.0 : 1.60);
-                        },
-                      )
-                    : Container(
-                        child: Container(
-                            margin: EdgeInsets.only(top: 80, left: 20),
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.only(right: 70),
-                                  height: 150,
-                                  child: Image.asset(
-                                    "img/as.png",
-                                    filterQuality: FilterQuality.high,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.only(right: 30),
-                                    child: Text(
-                                      "Nothing to see here",
-                                      style: TextStyle(
-                                          fontFamily: "font2", fontSize: 18.0),
-                                    )),
-                                Container(
-                                    margin: EdgeInsets.only(right: 30, top: 10),
-                                    child: Text(
-                                      "Swipe left or right to see more products",
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.grey.withOpacity(0.8)),
-                                    )),
-                              ],
-                            )),
-                      ),
-              )
-            : Center(
-                child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                    Color.fromRGBO(212, 20, 15, 1.0),
+          margin: EdgeInsets.only(top: 10),
+          child: snapshot.data.documents.length != 0
+              ? StaggeredGridView.countBuilder(
+            crossAxisCount: 2,
+            mainAxisSpacing: 13,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context,) =>
+                          _onTapImage(context, snapshot));
+                },
+                child: Container(
+                  margin: EdgeInsets.only(left: 10, right: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(12))),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12.0),
+                    ),
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "img/img.gif",
+                      image: snapshot.data.documents[index]
+                      ["itemImage"],
+                      fit: BoxFit.cover,
+                      fadeInCurve: Curves.easeIn,
+                    ),
                   ),
                 ),
               );
+            },
+            staggeredTileBuilder: (index) {
+              return StaggeredTile.count(
+                  1, index.isEven ? 1.0 : 1.60);
+            },
+          )
+              : Container(
+            child: Container(
+                margin: EdgeInsets.only(top: 80, left: 20),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 70),
+                      height: 150,
+                      child: Image.asset(
+                        "img/as.png",
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    Container(
+                        margin: EdgeInsets.only(right: 30),
+                        child: Text(
+                          "Nothing to see here",
+                          style: TextStyle(
+                              fontFamily: "font2", fontSize: 18.0),
+                        )),
+                    Container(
+                        margin: EdgeInsets.only(right: 30, top: 10),
+                        child: Text(
+                          "Swipe left or right to see more products",
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey.withOpacity(0.8)),
+                        )),
+                  ],
+                )),
+          ),
+        )
+            : Center(
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(
+              Color.fromRGBO(212, 20, 15, 1.0),
+            ),
+          ),
+        );
       },
     );
   }
@@ -451,88 +435,86 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       builder: (_, snapshot) {
         return snapshot.hasData
             ? Container(
-                margin: EdgeInsets.only(top: 10),
-                child: snapshot.data.documents.length != 0
-                    ? StaggeredGridView.countBuilder(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 13,
-                        itemCount: snapshot.data.documents.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (
-                                    context,
-                                  ) =>
-                                      _onTapImage(context, snapshot));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(left: 10, right: 10),
-                              decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12.0),
-                                ),
-                                child: FadeInImage.assetNetwork(
-                                  placeholder: "img/img.gif",
-                                  image: snapshot.data.documents[index]
-                                      ["itemImage"],
-                                  fit: BoxFit.cover,
-                                  fadeInCurve: Curves.easeIn,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        staggeredTileBuilder: (index) {
-                          return StaggeredTile.count(
-                              1, index.isEven ? 1.0 : 1.60);
-                        },
-                      )
-                    : Container(
-                        child: Container(
-                            margin: EdgeInsets.only(top: 80, left: 20),
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.only(right: 70),
-                                  height: 150,
-                                  child: Image.asset(
-                                    "img/as.png",
-                                    filterQuality: FilterQuality.high,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.only(right: 30),
-                                    child: Text(
-                                      "Nothing to see here",
-                                      style: TextStyle(
-                                          fontFamily: "font2", fontSize: 18.0),
-                                    )),
-                                Container(
-                                    margin: EdgeInsets.only(right: 30, top: 10),
-                                    child: Text(
-                                      "Swipe left or right to see more products",
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.grey.withOpacity(0.8)),
-                                    )),
-                              ],
-                            )),
-                      ),
-              )
-            : Center(
-                child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                    Color.fromRGBO(212, 20, 15, 1.0),
+          margin: EdgeInsets.only(top: 10),
+          child: snapshot.data.documents.length != 0
+              ? StaggeredGridView.countBuilder(
+            crossAxisCount: 2,
+            mainAxisSpacing: 13,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context,) =>
+                          _onTapImage(context, snapshot));
+                },
+                child: Container(
+                  margin: EdgeInsets.only(left: 10, right: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(12))),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12.0),
+                    ),
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "img/img.gif",
+                      image: snapshot.data.documents[index]
+                      ["itemImage"],
+                      fit: BoxFit.cover,
+                      fadeInCurve: Curves.easeIn,
+                    ),
                   ),
                 ),
               );
+            },
+            staggeredTileBuilder: (index) {
+              return StaggeredTile.count(
+                  1, index.isEven ? 1.0 : 1.60);
+            },
+          )
+              : Container(
+            child: Container(
+                margin: EdgeInsets.only(top: 80, left: 20),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 70),
+                      height: 150,
+                      child: Image.asset(
+                        "img/as.png",
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    Container(
+                        margin: EdgeInsets.only(right: 30),
+                        child: Text(
+                          "Nothing to see here",
+                          style: TextStyle(
+                              fontFamily: "font2", fontSize: 18.0),
+                        )),
+                    Container(
+                        margin: EdgeInsets.only(right: 30, top: 10),
+                        child: Text(
+                          "Swipe left or right to see more products",
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey.withOpacity(0.8)),
+                        )),
+                  ],
+                )),
+          ),
+        )
+            : Center(
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(
+              Color.fromRGBO(212, 20, 15, 1.0),
+            ),
+          ),
+        );
       },
     );
   }
@@ -547,88 +529,86 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       builder: (_, snapshot) {
         return snapshot.hasData
             ? Container(
-                margin: EdgeInsets.only(top: 10),
-                child: snapshot.data.documents.length != 0
-                    ? StaggeredGridView.countBuilder(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 13,
-                        itemCount: snapshot.data.documents.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (
-                                    context,
-                                  ) =>
-                                      _onTapImage(context, snapshot));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(left: 10, right: 10),
-                              decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12.0),
-                                ),
-                                child: FadeInImage.assetNetwork(
-                                  placeholder: "img/img.gif",
-                                  image: snapshot.data.documents[index]
-                                      ["itemImage"],
-                                  fit: BoxFit.cover,
-                                  fadeInCurve: Curves.easeIn,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        staggeredTileBuilder: (index) {
-                          return StaggeredTile.count(
-                              1, index.isEven ? 1.0 : 1.60);
-                        },
-                      )
-                    : Container(
-                        child: Container(
-                            margin: EdgeInsets.only(top: 80, left: 20),
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.only(right: 70),
-                                  height: 150,
-                                  child: Image.asset(
-                                    "img/as.png",
-                                    filterQuality: FilterQuality.high,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.only(right: 30),
-                                    child: Text(
-                                      "Nothing to see here",
-                                      style: TextStyle(
-                                          fontFamily: "font2", fontSize: 18.0),
-                                    )),
-                                Container(
-                                    margin: EdgeInsets.only(right: 30, top: 10),
-                                    child: Text(
-                                      "Swipe left or right to see more products",
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.grey.withOpacity(0.8)),
-                                    )),
-                              ],
-                            )),
-                      ),
-              )
-            : Center(
-                child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                    Color.fromRGBO(212, 20, 15, 1.0),
+          margin: EdgeInsets.only(top: 10),
+          child: snapshot.data.documents.length != 0
+              ? StaggeredGridView.countBuilder(
+            crossAxisCount: 2,
+            mainAxisSpacing: 13,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context,) =>
+                          _onTapImage(context, snapshot));
+                },
+                child: Container(
+                  margin: EdgeInsets.only(left: 10, right: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(12))),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12.0),
+                    ),
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "img/img.gif",
+                      image: snapshot.data.documents[index]
+                      ["itemImage"],
+                      fit: BoxFit.cover,
+                      fadeInCurve: Curves.easeIn,
+                    ),
                   ),
                 ),
               );
+            },
+            staggeredTileBuilder: (index) {
+              return StaggeredTile.count(
+                  1, index.isEven ? 1.0 : 1.60);
+            },
+          )
+              : Container(
+            child: Container(
+                margin: EdgeInsets.only(top: 80, left: 20),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 70),
+                      height: 150,
+                      child: Image.asset(
+                        "img/as.png",
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    Container(
+                        margin: EdgeInsets.only(right: 30),
+                        child: Text(
+                          "Nothing to see here",
+                          style: TextStyle(
+                              fontFamily: "font2", fontSize: 18.0),
+                        )),
+                    Container(
+                        margin: EdgeInsets.only(right: 30, top: 10),
+                        child: Text(
+                          "Swipe left or right to see more products",
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey.withOpacity(0.8)),
+                        )),
+                  ],
+                )),
+          ),
+        )
+            : Center(
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(
+              Color.fromRGBO(212, 20, 15, 1.0),
+            ),
+          ),
+        );
       },
     );
   }
@@ -643,88 +623,86 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       builder: (_, snapshot) {
         return snapshot.hasData
             ? Container(
-                margin: EdgeInsets.only(top: 10),
-                child: snapshot.data.documents.length != 0
-                    ? StaggeredGridView.countBuilder(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 13,
-                        itemCount: snapshot.data.documents.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (
-                                    context,
-                                  ) =>
-                                      _onTapImage(context, snapshot));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(left: 10, right: 10),
-                              decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12.0),
-                                ),
-                                child: FadeInImage.assetNetwork(
-                                  placeholder: "img/img.gif",
-                                  image: snapshot.data.documents[index]
-                                      ["itemImage"],
-                                  fit: BoxFit.cover,
-                                  fadeInCurve: Curves.easeIn,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        staggeredTileBuilder: (index) {
-                          return StaggeredTile.count(
-                              1, index.isEven ? 1.0 : 1.60);
-                        },
-                      )
-                    : Container(
-                        child: Container(
-                            margin: EdgeInsets.only(top: 80, left: 20),
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.only(right: 70),
-                                  height: 150,
-                                  child: Image.asset(
-                                    "img/as.png",
-                                    filterQuality: FilterQuality.high,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.only(right: 30),
-                                    child: Text(
-                                      "Nothing to see here",
-                                      style: TextStyle(
-                                          fontFamily: "font2", fontSize: 18.0),
-                                    )),
-                                Container(
-                                    margin: EdgeInsets.only(right: 30, top: 10),
-                                    child: Text(
-                                      "Swipe left or right to see more products",
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.grey.withOpacity(0.8)),
-                                    )),
-                              ],
-                            )),
-                      ),
-              )
-            : Center(
-                child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                    Color.fromRGBO(212, 20, 15, 1.0),
+          margin: EdgeInsets.only(top: 10),
+          child: snapshot.data.documents.length != 0
+              ? StaggeredGridView.countBuilder(
+            crossAxisCount: 2,
+            mainAxisSpacing: 13,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context,) =>
+                          _onTapImage(context, snapshot));
+                },
+                child: Container(
+                  margin: EdgeInsets.only(left: 10, right: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(12))),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12.0),
+                    ),
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "img/img.gif",
+                      image: snapshot.data.documents[index]
+                      ["itemImage"],
+                      fit: BoxFit.cover,
+                      fadeInCurve: Curves.easeIn,
+                    ),
                   ),
                 ),
               );
+            },
+            staggeredTileBuilder: (index) {
+              return StaggeredTile.count(
+                  1, index.isEven ? 1.0 : 1.60);
+            },
+          )
+              : Container(
+            child: Container(
+                margin: EdgeInsets.only(top: 80, left: 20),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 70),
+                      height: 150,
+                      child: Image.asset(
+                        "img/as.png",
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    Container(
+                        margin: EdgeInsets.only(right: 30),
+                        child: Text(
+                          "Nothing to see here",
+                          style: TextStyle(
+                              fontFamily: "font2", fontSize: 18.0),
+                        )),
+                    Container(
+                        margin: EdgeInsets.only(right: 30, top: 10),
+                        child: Text(
+                          "Swipe left or right to see more products",
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey.withOpacity(0.8)),
+                        )),
+                  ],
+                )),
+          ),
+        )
+            : Center(
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(
+              Color.fromRGBO(212, 20, 15, 1.0),
+            ),
+          ),
+        );
       },
     );
   }
@@ -739,88 +717,86 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       builder: (_, snapshot) {
         return snapshot.hasData
             ? Container(
-                margin: EdgeInsets.only(top: 10),
-                child: snapshot.data.documents.length != 0
-                    ? StaggeredGridView.countBuilder(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 13,
-                        itemCount: snapshot.data.documents.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (
-                                    context,
-                                  ) =>
-                                      _onTapImage(context, snapshot));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(left: 10, right: 10),
-                              decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12))),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12.0),
-                                ),
-                                child: FadeInImage.assetNetwork(
-                                  placeholder: "img/img.gif",
-                                  image: snapshot.data.documents[index]
-                                      ["itemImage"],
-                                  fit: BoxFit.cover,
-                                  fadeInCurve: Curves.easeIn,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        staggeredTileBuilder: (index) {
-                          return StaggeredTile.count(
-                              1, index.isEven ? 1.0 : 1.60);
-                        },
-                      )
-                    : Container(
-                        child: Container(
-                            margin: EdgeInsets.only(top: 80, left: 20),
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.only(right: 70),
-                                  height: 150,
-                                  child: Image.asset(
-                                    "img/as.png",
-                                    filterQuality: FilterQuality.high,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.only(right: 30),
-                                    child: Text(
-                                      "Nothing to see here",
-                                      style: TextStyle(
-                                          fontFamily: "font2", fontSize: 18.0),
-                                    )),
-                                Container(
-                                    margin: EdgeInsets.only(right: 30, top: 10),
-                                    child: Text(
-                                      "Swipe left or right to see more products",
-                                      style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.grey.withOpacity(0.8)),
-                                    )),
-                              ],
-                            )),
-                      ),
-              )
-            : Center(
-                child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                    Color.fromRGBO(212, 20, 15, 1.0),
+          margin: EdgeInsets.only(top: 10),
+          child: snapshot.data.documents.length != 0
+              ? StaggeredGridView.countBuilder(
+            crossAxisCount: 2,
+            mainAxisSpacing: 13,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (context,) =>
+                          _onTapImage(context, snapshot));
+                },
+                child: Container(
+                  margin: EdgeInsets.only(left: 10, right: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(12))),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12.0),
+                    ),
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "img/img.gif",
+                      image: snapshot.data.documents[index]
+                      ["itemImage"],
+                      fit: BoxFit.cover,
+                      fadeInCurve: Curves.easeIn,
+                    ),
                   ),
                 ),
               );
+            },
+            staggeredTileBuilder: (index) {
+              return StaggeredTile.count(
+                  1, index.isEven ? 1.0 : 1.60);
+            },
+          )
+              : Container(
+            child: Container(
+                margin: EdgeInsets.only(top: 80, left: 20),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 70),
+                      height: 150,
+                      child: Image.asset(
+                        "img/as.png",
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    Container(
+                        margin: EdgeInsets.only(right: 30),
+                        child: Text(
+                          "Nothing to see here",
+                          style: TextStyle(
+                              fontFamily: "font2", fontSize: 18.0),
+                        )),
+                    Container(
+                        margin: EdgeInsets.only(right: 30, top: 10),
+                        child: Text(
+                          "Swipe left or right to see more products",
+                          style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey.withOpacity(0.8)),
+                        )),
+                  ],
+                )),
+          ),
+        )
+            : Center(
+          child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(
+              Color.fromRGBO(212, 20, 15, 1.0),
+            ),
+          ),
+        );
       },
     );
   }
@@ -882,80 +858,4 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
     );
   }
 }
-class SideCutClipper extends CustomClipper<Path> {
-  // Play with scals to get more clear versions
-  @override
-  Path getClip(Size size) {
-    double xFactor = 18, yFactor = 15;
-    double height = size.height;
-    double startY = (height - height / 3) - yFactor;
-    double xVal = size.width;
-    double yVal = 0;
-    final path = Path();
 
-    path.lineTo(xVal, yVal);
-
-    yVal = startY;
-    path.lineTo(xVal, yVal);
-
-    double scale = 1.4;
-    path.cubicTo(xVal, yVal, xVal, yVal + yFactor * scale,
-        xVal - xFactor * scale, yVal + yFactor * scale);
-    xVal = xVal - xFactor * scale;
-    yVal = yVal + yFactor * scale;
-
-    double scale1 = 1;
-    path.cubicTo(xVal, yVal, xVal - xFactor * scale1, yVal,
-        xVal - scale1 * xFactor, yVal + yFactor * scale1);
-    xVal = xVal - scale1 * xFactor;
-    yVal = yVal + scale1 * yFactor;
-    double scale2 = 1.2;
-    path.cubicTo(xVal, yVal, xVal, yVal + yFactor * scale2,
-        xVal + xFactor * scale2, yVal + yFactor * scale2);
-    xVal = xVal + xFactor * scale2;
-    yVal = yVal + yFactor * scale2;
-
-    scale = 1.6;
-
-    path.cubicTo(xVal, yVal, xVal + xFactor * scale, yVal,
-        xVal + xFactor * scale, yVal + yFactor * scale);
-    xVal = xVal + xFactor * scale;
-    yVal = yVal + yFactor * scale;
-
-    // TODO: Need to recreate a better later.
-    // First point in curve
-    // double test = 2.2;
-    // path.cubicTo(xVal, yVal, xVal, yVal + yFactor * test, xVal - xFactor * test,
-    //     yVal + yFactor * test);
-    // xVal = xVal - xFactor * test;
-    // yVal = yVal + yFactor * test;
-
-    // test = 1;
-    // path.cubicTo(xVal, yVal, xVal - xFactor * test, yVal, xVal - test * xFactor,
-    //     yVal + yFactor * test);
-    // xVal = xVal - test * xFactor;
-    // yVal = yVal + test * yFactor;
-
-    // path.cubicTo(xVal, yVal, xVal, yVal + yFactor * test, xVal + xFactor * test,
-    //     yVal + yFactor * test);
-    // xVal = xVal + xFactor * test;
-    // yVal = yVal + yFactor * test;
-
-    // test = 2.2;
-
-    // path.cubicTo(xVal, yVal, xVal + xFactor * test, yVal, xVal + xFactor * test,
-    //     yVal + yFactor * test);
-    // xVal = xVal + xFactor * test;
-    // yVal = yVal + yFactor * test;
-
-    path.lineTo(xVal, height);
-    path.lineTo(0, height);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return true;
-  }
-}
