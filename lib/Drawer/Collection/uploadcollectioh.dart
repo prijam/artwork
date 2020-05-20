@@ -27,6 +27,194 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
   TextEditingController _pri = TextEditingController();
   DateTime now = new DateTime.now();
 
+  Future _sendMsg(
+      BuildContext context, AsyncSnapshot snapshot, int index) async {
+    Firestore.instance
+        .collection("users")
+        .document(snapshot.data.documents[index]["uID"])
+        .collection("User_Data")
+        .document("Messages")
+        .collection("Inbox")
+        .document()
+        .setData({
+      "message": message,
+      "senderID": widget.firebaseUser.uid,
+      "sendDate&Time": now,
+      "buyerPrice": _price,
+      "itemImage": snapshot.data.documents[index]["itemImage"],
+      "title": snapshot.data.documents[index]["title"],
+    }).whenComplete(() {
+      msgcon.clear();
+      Navigator.of(context).pop();
+    });
+  }
+
+  _onTapImage(BuildContext context, AsyncSnapshot snapshot) {
+    return PageView.builder(
+        controller: PageController(viewportFraction: 1),
+        itemCount: snapshot.data.documents.length,
+        itemBuilder: (_, index) {
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Padding(
+              padding: const EdgeInsets.only(right: 18.0, left: 18.0),
+              child: SingleChildScrollView(
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(25))),
+                  margin: EdgeInsets.only(top: 100),
+                  height: 500,
+                  width: 400,
+                  child: Stack(
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(left: 300.0),
+                        child: IconButton(
+                            icon: new Icon(
+                              Icons.close,
+                              color: Colors.red,
+                              size: 35.0,
+                            ),
+                            onPressed: () {
+                              msgcon.clear();
+                              _pri.clear();
+                              Navigator.of(context).pop(null);
+                            }),
+                      ),
+                      Positioned(
+                        top: 50,
+                        left: 42,
+                        child: Container(
+                            height: 50,
+                            width: 250,
+                            child: StreamBuilder<User>(
+                              stream: Auth.getUser(
+                                  snapshot.data.documents[index]["uID"]),
+                              builder: (_, snapshot) {
+                                return snapshot.hasData
+                                    ? Row(
+                                        children: <Widget>[
+                                          CircleAvatar(
+                                            radius: 17.0,
+                                            backgroundImage: NetworkImage(
+                                                snapshot
+                                                    .data.profilePictureURL),
+                                            backgroundColor: Colors.transparent,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 6.0, left: 15),
+                                            child: Text(
+                                              snapshot.data.firstName,
+                                              style: TextStyle(
+                                                  color: Colors.blueAccent[400],
+                                                  fontSize: 16.0,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    : Container();
+                              },
+                            )),
+                      ),
+                      Positioned(
+                        top: 100,
+                        left: 40,
+                        child: Container(
+                          height: 200,
+                          width: 300,
+                          child: Image.network(
+                            snapshot.data.documents[index]["itemImage"],
+                            fit: BoxFit.cover,
+                            filterQuality: FilterQuality.high,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 295,
+                        left: 40,
+                        child: Container(
+                          margin: EdgeInsets.only(right: 40, top: 15),
+                          height: 20,
+                          width: 254,
+                          child: Text(
+                            snapshot.data.documents[index]["title"],
+                            style: TextStyle(fontFamily: "font2"),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 328,
+                        left: 40,
+                        child: Container(
+                          margin: EdgeInsets.only(right: 95),
+                          height: 70,
+                          width: 250,
+                          child: Text(
+                            snapshot.data.documents[index]["description"],
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black.withOpacity(0.5)),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 173,
+                        right: 1,
+                        child: Container(
+                          height: 20,
+                          width: 80,
+                          child: Text(
+                            snapshot.data.documents[index]["price"]
+                                .replaceAllMapped(reg, mathFunc),
+                            style: TextStyle(
+                                fontFamily: "font2", color: Colors.red),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 140,
+                        right: 2,
+                        child: Container(
+                          height: 18,
+                          width: 80,
+                          child: Text("Your price"),
+                        ),
+                      ),
+                      Positioned(bottom: 132, right: -19, child: pri()),
+                      Positioned(bottom: 30, left: 40, child: messageBox()),
+                      Positioned(
+                        bottom: 10,
+                        right: 10,
+                        child: Container(
+                          width: 350,
+                          height: 40,
+                          child: RaisedButton(
+                            color: Colors.deepOrange,
+                            onPressed: () {
+                              _sendMsg(context, snapshot, index);
+                            },
+                            child: Text(
+                              "Send Message",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -41,7 +229,6 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print(now);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -65,76 +252,27 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       ),
       body: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
-        child: Container(
-          color: Colors.black,
-          height: 950,
-          width: 450,
-          child: Column(
+        child:Container(
+          color: Colors.red,
+          height: 1000,
+          child: Stack(
             children: <Widget>[
-              Container(
-                height: 720,
-                width: 450,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(100.0),
-                        bottomRight: Radius.circular(100.0))),
-                child: Column(
-                  children: <Widget>[
-                    tabbar(),
-                    tabview(),
-                  ],
-                ),
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Container(
-                  margin: EdgeInsets.only(right: 60),
-                  height: 84,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(left: 10, top: 10),
-                        height: 50,
-                        width: 70,
-                        child: Text(
-                          "Top sellers",
-                          style: TextStyle(
-                              color: Colors.grey.withOpacity(0.7),
-                              fontSize: 18.0,
-                              fontFamily: 'font2'),
-                        ),
-                      ),
-                      Image.asset(
-                        "img/av1.png",
-                        height: 50,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Image.asset(
-                        "img/av4.png",
-                        height: 50,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Image.asset(
-                        "img/av5.png",
-                        height: 50,
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Image.asset(
-                        "img/4.png",
-                        height: 50,
-                      )
-                    ],
+              tabbar(),
+              Positioned(
+                  top:40,
+                  child: tabview()),
+              Positioned(
+                top:650,
+                child: ClipPath(
+                  clipper: SideCutClipper(),
+                  child: Container(
+                    height: 155,
+                    width:412,
+                    color: Colors.black,
                   ),
                 ),
               )
+
             ],
           ),
         ),
@@ -201,12 +339,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
 
   Widget tabview() {
     return Container(
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(100.0),
-              bottomRight: Radius.circular(100.0))),
-      height: 610.0,
+      height:760.0,
+      width:400,
       child: TabBarView(
         controller: _tabController,
         children: <Widget>[explore(), art(), paint(), craft(), illu()],
@@ -225,233 +359,17 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                 child: snapshot.data.documents.length != 0
                     ? StaggeredGridView.countBuilder(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
+                        mainAxisSpacing: 13,
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (context, index) {
-                          String price =
-                              snapshot.data.documents[index]["price"];
-                          _onTapImage(BuildContext context) {
-                            Future _sendMsg(BuildContext context) async {
-                              Firestore.instance
-                                  .collection("users")
-                                  .document(
-                                      snapshot.data.documents[index]["uID"])
-                                  .collection("User_Data")
-                                  .document("Messages")
-                                  .collection("Inbox")
-                                  .document()
-                                  .setData({
-                                "message": message,
-                                "senderID": widget.firebaseUser.uid,
-                                "sendDate&Time": now,
-                                "buyerPrice": _price,
-                                "itemImage": snapshot.data.documents[index]
-                                    ["itemImage"],
-                                "title":snapshot.data.documents[index]
-                                ["title"],
-                              }).whenComplete(() {
-                                msgcon.clear();
-                                Navigator.of(context).pop();
-                              });
-                            }
-
-                            return Scaffold(
-                              backgroundColor: Colors.transparent,
-                              body: Padding(
-                                padding: const EdgeInsets.only(
-                                    right: 18.0, left: 18.0),
-                                child: SingleChildScrollView(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                          color: Colors.grey.withOpacity(0.2),
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(25))),
-                                    margin: EdgeInsets.only(top: 100),
-                                    height: 500,
-                                    width: 400,
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Container(
-                                          margin: EdgeInsets.only(left: 300.0),
-                                          child: IconButton(
-                                              icon: new Icon(
-                                                Icons.close,
-                                                color: Colors.red,
-                                                size: 35.0,
-                                              ),
-                                              onPressed: () {
-                                                msgcon.clear();
-                                                _pri.clear();
-                                                Navigator.of(context).pop(null);
-                                              }),
-                                        ),
-                                        Positioned(
-                                          top: 50,
-                                          left: 42,
-                                          child: Container(
-                                              height: 50,
-                                              width: 250,
-                                              child: StreamBuilder<User>(
-                                                stream: Auth.getUser(snapshot
-                                                    .data
-                                                    .documents[index]["uID"]),
-                                                builder: (_, snapshot) {
-                                                  return snapshot.hasData
-                                                      ? Row(
-                                                          children: <Widget>[
-                                                            CircleAvatar(
-                                                              radius: 17.0,
-                                                              backgroundImage:
-                                                                  NetworkImage(
-                                                                      snapshot
-                                                                          .data
-                                                                          .profilePictureURL),
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      top: 6.0,
-                                                                      left: 15),
-                                                              child: Text(
-                                                                snapshot.data
-                                                                    .firstName,
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                            .blueAccent[
-                                                                        400],
-                                                                    fontSize:
-                                                                        16.0,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        )
-                                                      : Container();
-                                                },
-                                              )),
-                                        ),
-                                        Positioned(
-                                          top: 100,
-                                          left: 40,
-                                          child: Container(
-                                            height: 200,
-                                            width: 300,
-                                            child: Image.network(
-                                              snapshot.data.documents[index]
-                                                  ["itemImage"],
-                                              fit: BoxFit.cover,
-                                              filterQuality: FilterQuality.high,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          top: 295,
-                                          left: 40,
-                                          child: Container(
-                                            margin: EdgeInsets.only(
-                                                right: 40, top: 15),
-                                            height: 20,
-                                            width: 254,
-                                            child: Text(
-                                              snapshot.data.documents[index]
-                                                  ["title"],
-                                              style: TextStyle(
-                                                  fontFamily: "font2"),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          top: 328,
-                                          left: 40,
-                                          child: Container(
-                                            margin: EdgeInsets.only(right: 95),
-                                            height: 60,
-                                            width: 200,
-                                            child: Text(
-                                              snapshot.data.documents[index]
-                                                  ["description"],
-                                              style: TextStyle(
-                                                  fontFamily: "font1",
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.black
-                                                      .withOpacity(0.5)),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          bottom: 160,
-                                          right: 1,
-                                          child: Container(
-                                            height: 20,
-                                            width: 80,
-                                            child: Text(
-                                              price.replaceAllMapped(
-                                                  reg, mathFunc),
-                                              style: TextStyle(
-                                                  fontFamily: "font2",
-                                                  color: Colors.red),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          bottom: 140,
-                                          right: 2,
-                                          child: Container(
-                                            height: 18,
-                                            width: 80,
-                                            child: Text("Your price"),
-                                          ),
-                                        ),
-                                        Positioned(
-                                            bottom: 132,
-                                            right: -19,
-                                            child: pri()),
-                                        Positioned(
-                                            bottom: 50,
-                                            left: 40,
-                                            child: messageBox()),
-                                        Positioned(
-                                          bottom: 10,
-                                          right: 10,
-                                          child: Container(
-                                            width: 350,
-                                            height: 40,
-                                            child: RaisedButton(
-                                              color: Colors.deepOrange,
-                                              onPressed: () {
-                                                _sendMsg(context);
-                                              },
-                                              child: Text(
-                                                "Send Message",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-
                           return InkWell(
                             onTap: () {
                               showDialog(
                                   context: context,
-                                  builder: (context) => _onTapImage(context));
+                                  builder: (
+                                    context,
+                                  ) =>
+                                      _onTapImage(context, snapshot));
                             },
                             child: Container(
                               margin: EdgeInsets.only(left: 10, right: 10),
@@ -537,28 +455,35 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                 child: snapshot.data.documents.length != 0
                     ? StaggeredGridView.countBuilder(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
+                        mainAxisSpacing: 13,
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (context, index) {
-                          String price =
-                              snapshot.data.documents[index]["price"];
-                          return Container(
-                            margin: EdgeInsets.only(left: 10, right: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12.0),
-                              ),
-                              child: FadeInImage.assetNetwork(
-                                placeholder: "img/img.gif",
-                                image: snapshot.data.documents[index]
-                                    ["itemImage"],
-                                fit: BoxFit.cover,
-                                fadeInCurve: Curves.easeIn,
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (
+                                    context,
+                                  ) =>
+                                      _onTapImage(context, snapshot));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "img/img.gif",
+                                  image: snapshot.data.documents[index]
+                                      ["itemImage"],
+                                  fit: BoxFit.cover,
+                                  fadeInCurve: Curves.easeIn,
+                                ),
                               ),
                             ),
                           );
@@ -570,7 +495,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                       )
                     : Container(
                         child: Container(
-                            margin: EdgeInsets.only(top: 130, left: 40),
+                            margin: EdgeInsets.only(top: 80, left: 20),
                             child: Column(
                               children: <Widget>[
                                 Container(
@@ -626,26 +551,35 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                 child: snapshot.data.documents.length != 0
                     ? StaggeredGridView.countBuilder(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
+                        mainAxisSpacing: 13,
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (context, index) {
-                          return Container(
-                            margin: EdgeInsets.only(left: 10, right: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12.0),
-                              ),
-                              child: FadeInImage.assetNetwork(
-                                placeholder: "img/img.gif",
-                                image: snapshot.data.documents[index]
-                                    ["itemImage"],
-                                fit: BoxFit.cover,
-                                fadeInCurve: Curves.easeIn,
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (
+                                    context,
+                                  ) =>
+                                      _onTapImage(context, snapshot));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "img/img.gif",
+                                  image: snapshot.data.documents[index]
+                                      ["itemImage"],
+                                  fit: BoxFit.cover,
+                                  fadeInCurve: Curves.easeIn,
+                                ),
                               ),
                             ),
                           );
@@ -657,7 +591,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                       )
                     : Container(
                         child: Container(
-                            margin: EdgeInsets.only(top: 130, left: 40),
+                            margin: EdgeInsets.only(top: 80, left: 20),
                             child: Column(
                               children: <Widget>[
                                 Container(
@@ -713,28 +647,35 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                 child: snapshot.data.documents.length != 0
                     ? StaggeredGridView.countBuilder(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
+                        mainAxisSpacing: 13,
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (context, index) {
-                          String price =
-                              snapshot.data.documents[index]["price"];
-                          return Container(
-                            margin: EdgeInsets.only(left: 10, right: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12.0),
-                              ),
-                              child: FadeInImage.assetNetwork(
-                                placeholder: "img/img.gif",
-                                image: snapshot.data.documents[index]
-                                    ["itemImage"],
-                                fit: BoxFit.cover,
-                                fadeInCurve: Curves.easeIn,
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (
+                                    context,
+                                  ) =>
+                                      _onTapImage(context, snapshot));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "img/img.gif",
+                                  image: snapshot.data.documents[index]
+                                      ["itemImage"],
+                                  fit: BoxFit.cover,
+                                  fadeInCurve: Curves.easeIn,
+                                ),
                               ),
                             ),
                           );
@@ -746,7 +687,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                       )
                     : Container(
                         child: Container(
-                            margin: EdgeInsets.only(top: 130, left: 40),
+                            margin: EdgeInsets.only(top: 80, left: 20),
                             child: Column(
                               children: <Widget>[
                                 Container(
@@ -802,28 +743,35 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                 child: snapshot.data.documents.length != 0
                     ? StaggeredGridView.countBuilder(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
+                        mainAxisSpacing: 13,
                         itemCount: snapshot.data.documents.length,
                         itemBuilder: (context, index) {
-                          String price =
-                              snapshot.data.documents[index]["price"];
-                          return Container(
-                            margin: EdgeInsets.only(left: 10, right: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12))),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(12.0),
-                              ),
-                              child: FadeInImage.assetNetwork(
-                                placeholder: "img/img.gif",
-                                image: snapshot.data.documents[index]
-                                    ["itemImage"],
-                                fit: BoxFit.cover,
-                                fadeInCurve: Curves.easeIn,
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (
+                                    context,
+                                  ) =>
+                                      _onTapImage(context, snapshot));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "img/img.gif",
+                                  image: snapshot.data.documents[index]
+                                      ["itemImage"],
+                                  fit: BoxFit.cover,
+                                  fadeInCurve: Curves.easeIn,
+                                ),
                               ),
                             ),
                           );
@@ -835,7 +783,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                       )
                     : Container(
                         child: Container(
-                            margin: EdgeInsets.only(top: 130, left: 40),
+                            margin: EdgeInsets.only(top: 80, left: 20),
                             child: Column(
                               children: <Widget>[
                                 Container(
@@ -881,7 +829,6 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
     return Container(
       height: 70,
       width: 300,
-      color: Colors.transparent,
       child: new TextFormField(
           onChanged: (value) {
             message = value;
@@ -933,5 +880,82 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
             fontWeight: FontWeight.bold,
           )),
     );
+  }
+}
+class SideCutClipper extends CustomClipper<Path> {
+  // Play with scals to get more clear versions
+  @override
+  Path getClip(Size size) {
+    double xFactor = 18, yFactor = 15;
+    double height = size.height;
+    double startY = (height - height / 3) - yFactor;
+    double xVal = size.width;
+    double yVal = 0;
+    final path = Path();
+
+    path.lineTo(xVal, yVal);
+
+    yVal = startY;
+    path.lineTo(xVal, yVal);
+
+    double scale = 1.4;
+    path.cubicTo(xVal, yVal, xVal, yVal + yFactor * scale,
+        xVal - xFactor * scale, yVal + yFactor * scale);
+    xVal = xVal - xFactor * scale;
+    yVal = yVal + yFactor * scale;
+
+    double scale1 = 1;
+    path.cubicTo(xVal, yVal, xVal - xFactor * scale1, yVal,
+        xVal - scale1 * xFactor, yVal + yFactor * scale1);
+    xVal = xVal - scale1 * xFactor;
+    yVal = yVal + scale1 * yFactor;
+    double scale2 = 1.2;
+    path.cubicTo(xVal, yVal, xVal, yVal + yFactor * scale2,
+        xVal + xFactor * scale2, yVal + yFactor * scale2);
+    xVal = xVal + xFactor * scale2;
+    yVal = yVal + yFactor * scale2;
+
+    scale = 1.6;
+
+    path.cubicTo(xVal, yVal, xVal + xFactor * scale, yVal,
+        xVal + xFactor * scale, yVal + yFactor * scale);
+    xVal = xVal + xFactor * scale;
+    yVal = yVal + yFactor * scale;
+
+    // TODO: Need to recreate a better later.
+    // First point in curve
+    // double test = 2.2;
+    // path.cubicTo(xVal, yVal, xVal, yVal + yFactor * test, xVal - xFactor * test,
+    //     yVal + yFactor * test);
+    // xVal = xVal - xFactor * test;
+    // yVal = yVal + yFactor * test;
+
+    // test = 1;
+    // path.cubicTo(xVal, yVal, xVal - xFactor * test, yVal, xVal - test * xFactor,
+    //     yVal + yFactor * test);
+    // xVal = xVal - test * xFactor;
+    // yVal = yVal + test * yFactor;
+
+    // path.cubicTo(xVal, yVal, xVal, yVal + yFactor * test, xVal + xFactor * test,
+    //     yVal + yFactor * test);
+    // xVal = xVal + xFactor * test;
+    // yVal = yVal + yFactor * test;
+
+    // test = 2.2;
+
+    // path.cubicTo(xVal, yVal, xVal + xFactor * test, yVal, xVal + xFactor * test,
+    //     yVal + yFactor * test);
+    // xVal = xVal + xFactor * test;
+    // yVal = yVal + yFactor * test;
+
+    path.lineTo(xVal, height);
+    path.lineTo(0, height);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
   }
 }

@@ -1,5 +1,3 @@
-
-
 import 'package:artstore/firebaseHandler/auth.dart';
 import 'package:artstore/firebaseHandler/userModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,6 +17,7 @@ class MessageList extends StatefulWidget {
 class _MessageListState extends State<MessageList> {
   RegExp reg = new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
   Function mathFunc = (Match match) => '${match[1]},';
+  DateTime today = new DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -139,12 +138,6 @@ class _MessageListState extends State<MessageList> {
   }
 
   Widget body() {
-    var path = Firestore.instance
-        .collection("users")
-        .document(widget.firebaseUser.uid)
-        .collection("User_Data")
-        .document("Messages")
-        .collection("Inbox").getDocuments();
     return Container(
       height: 698,
       width: 350,
@@ -154,17 +147,26 @@ class _MessageListState extends State<MessageList> {
             .document(widget.firebaseUser.uid)
             .collection("User_Data")
             .document("Messages")
-            .collection("Inbox").snapshots(),
+            .collection("Inbox")
+            .snapshots(),
         builder: (_, snapshot) {
           return snapshot.hasData
               ? ListView.builder(
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (_, index) {
+                    var uploadTime = DateTime.parse(snapshot
+                        .data.documents[index]["sendDate&Time"]
+                        .toDate()
+                        .toString());
+                    final hours = today.difference(uploadTime).inHours;
+                    final day = today.difference(uploadTime).inDays;
+                    final daysString = day;
+                    final hourString = hours;
+
                     return Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: InkWell(
-                        onTap: (){
-                        },
+                        onTap: () {},
                         child: Card(
                           elevation: 5.0,
                           shape: RoundedRectangleBorder(
@@ -243,8 +245,22 @@ class _MessageListState extends State<MessageList> {
                                       )),
                                 ),
                                 Positioned(
-                                  bottom:44,
-                                  right: 5,
+                                  top: 146,
+                                  right: -3,
+                                  child: Container(
+                                    height: 20,
+                                    width: 80,
+                                    child: Text(
+                                      daysString == 0 ? "$hourString hrs ago" : "$daysString days ago",
+                                      style: TextStyle(
+                                          fontFamily: "font2",
+                                          color: Colors.grey),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 5,
+                                  right: -3,
                                   child: Container(
                                     height: 20,
                                     width: 80,
@@ -258,21 +274,22 @@ class _MessageListState extends State<MessageList> {
                                   ),
                                 ),
                                 Positioned(
-                                  bottom: 68,
-                                  right: 1,
+                                  bottom: 20,
+                                  right: 13,
                                   child: Container(
                                     height: 20,
-                                    width: 100,
+                                    width: 60,
                                     child: Text(
-                                      "Price Offered",
+                                      "Offered",
                                       style: TextStyle(
                                           fontFamily: "font2",
+                                          fontSize: 13.0,
                                           color: Colors.grey),
                                     ),
                                   ),
                                 ),
                                 Positioned(
-                                  bottom:43,
+                                  bottom: 43,
                                   left: 20,
                                   child: Container(
                                     height: 45,
@@ -286,10 +303,10 @@ class _MessageListState extends State<MessageList> {
                                   ),
                                 ),
                                 Positioned(
-                                  bottom:1,
+                                  bottom: 1,
                                   left: 20,
                                   child: Container(
-                                    height:65,
+                                    height: 65,
                                     width: 228,
                                     child: Text(
                                       snapshot.data.documents[index]["message"],
