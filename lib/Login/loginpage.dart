@@ -168,8 +168,10 @@ class _LoginPageState extends State<LoginPage> {
               textInputAction: TextInputAction.next,
 //              controller: _email..text = 'prijam36@gmail.com',
               style: TextStyle(color: Colors.black),
+
               decoration: new InputDecoration(
                   hintText: "prijam36@gmail.com",
+                  filled: true,
                   labelStyle: TextStyle(
                     letterSpacing: 0.8,
                     color: Colors.grey,
@@ -214,6 +216,7 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(color: Colors.black),
               decoration: new InputDecoration(
                   hintText: "password",
+                  filled: true,
                   labelStyle: TextStyle(
                     letterSpacing: 0.8,
                     color: Colors.grey,
@@ -412,6 +415,9 @@ class _LoginPageState extends State<LoginPage> {
         await Auth.signIn(email, password)
             .then((uid) => Navigator.of(context).pop());
       } catch (e) {
+        setState(() {
+          showProgressloading = false;
+        });
         print("Error in email sign in: $e");
         String exception = Auth.getExceptionText(e);
         _showErrorAlert(

@@ -3,16 +3,31 @@ import 'package:artstore/Login/loginpage.dart';
 import 'package:artstore/Login/rootScreen.dart';
 import 'package:artstore/CustomWidget/splashScreen.dart';
 import 'package:artstore/Login/signup.dart';
+import 'package:artstore/introScreen/viewPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'Login/Welcome.dart';
 
 void main() => runApp(ArtApp());
 
-class ArtApp extends StatelessWidget {
+class ArtApp extends StatefulWidget {
+  @override
+  _ArtAppState createState() => _ArtAppState();
+}
+
+class _ArtAppState extends State<ArtApp> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
   @override
   Widget build(BuildContext context) {
-
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
@@ -28,9 +43,9 @@ class ArtApp extends StatelessWidget {
             height: 400,
             width: 250,
             child: SplashScreen(
-              seconds: 1,
+              seconds: 2,
               backgroundColor: Colors.white,
-              navigateAfterSeconds: new RootScreen(),
+              navigateAfterSeconds: RootScreen(),
               image: new Image.asset(
                 "img/aaa.png",
                 fit: BoxFit.cover,

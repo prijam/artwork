@@ -1,7 +1,9 @@
 import 'package:artstore/HomePage/home.dart';
 import 'package:artstore/Login/Welcome.dart';
+import 'package:artstore/introScreen/viewPage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RootScreen extends StatefulWidget {
   @override
@@ -9,6 +11,8 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreenState extends State<RootScreen> {
+
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<FirebaseUser>(

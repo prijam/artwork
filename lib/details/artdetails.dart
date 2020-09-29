@@ -19,29 +19,30 @@ class _DetailsState extends State<Details> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        key: _scaffoldkey,
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            "Exhibition",
-            style: TextStyle(color: Colors.white70),
-          ),
-          iconTheme: IconThemeData.fallback(),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        ));
+    return Scaffold(
+      key: _scaffoldkey,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "Exhibition",
+          style: TextStyle(color: Colors.white70),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            height: 1020,
-            child: Stack(
-              children: <Widget>[
-                image(),
-                Positioned(top: 350, child: detailsview())
-              ],
-            ),
+        iconTheme: IconThemeData.fallback(),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          height: 1020,
+          child: Stack(
+            children: <Widget>[
+              image(),
+              Positioned(top: 350, child: detailsview())
+            ],
           ),
         ),
       ),
@@ -92,8 +93,7 @@ class _DetailsState extends State<Details> {
                   padding: EdgeInsets.only(left: 22.0),
                   child: CircleAvatar(
                     radius: 30.0,
-                    backgroundImage:
-                    NetworkImage(widget.post.data["userimg"]),
+                    backgroundImage: NetworkImage(widget.post.data["userimg"]),
                     backgroundColor: Colors.transparent,
                   ),
                 ),
@@ -146,7 +146,7 @@ class _DetailsState extends State<Details> {
             child: Text(
               "Follow",
               style:
-              TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -179,7 +179,6 @@ class _DetailsState extends State<Details> {
           Container(
             height: 225,
             width: 425,
-
             child: similarWork(),
           )
 //          similarWork()
@@ -367,8 +366,7 @@ class _DetailsState extends State<Details> {
             Container(
                 child: new CircleAvatar(
                   radius: 30.0,
-                  backgroundImage:
-                  NetworkImage(widget.post.data["userimg1"]),
+                  backgroundImage: NetworkImage(widget.post.data["userimg1"]),
                   backgroundColor: Colors.transparent,
                 ),
                 width: 36.0,
@@ -384,8 +382,7 @@ class _DetailsState extends State<Details> {
               child: Container(
                   child: new CircleAvatar(
                     radius: 30.0,
-                    backgroundImage:
-                    NetworkImage(widget.post.data["userimg2"]),
+                    backgroundImage: NetworkImage(widget.post.data["userimg2"]),
                     backgroundColor: Colors.transparent,
                   ),
                   width: 36.0,
@@ -402,8 +399,7 @@ class _DetailsState extends State<Details> {
               child: Container(
                   child: new CircleAvatar(
                     radius: 30.0,
-                    backgroundImage:
-                    NetworkImage(widget.post.data["userimg3"]),
+                    backgroundImage: NetworkImage(widget.post.data["userimg3"]),
                     backgroundColor: Colors.transparent,
                   ),
                   width: 36.0,
@@ -492,23 +488,25 @@ class _DetailsState extends State<Details> {
             if (!snapshot.hasData) {
               return Center(
                   child: CircularProgressIndicator(
-                    backgroundColor: Colors.white,
-                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.red),
-                  ));
+                backgroundColor: Colors.white,
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.red),
+              ));
             } else {
               return ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                   itemCount: snapshot.data.documents.length,
                   itemBuilder: (_, index) {
-                    return similarwirkopage(context,snapshot.data.documents[index]);
+                    return similarwirkopage(
+                        context, snapshot.data.documents[index]);
                   });
             }
           }),
     );
   }
 
-  Widget similarwirkopage(BuildContext context, DocumentSnapshot documentSnapshot) {
+  Widget similarwirkopage(
+      BuildContext context, DocumentSnapshot documentSnapshot) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -543,8 +541,7 @@ class _DetailsState extends State<Details> {
                       child: Text(
                         documentSnapshot["title"] ?? "",
                         style: TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w600),
+                            fontSize: 15.0, fontWeight: FontWeight.w600),
                       ),
                     ),
                     SizedBox(
