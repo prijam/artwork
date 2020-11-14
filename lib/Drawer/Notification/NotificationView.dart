@@ -87,7 +87,7 @@ class _MessageListState extends State<MessageList> {
                     sliver: SliverAppBar(
                       backgroundColor: Colors.white,
                       leading: Container(),
-                      expandedHeight: 120.0,
+                      expandedHeight: 100.0,
                       floating: false,
                       pinned: true,
                       flexibleSpace: Row(
