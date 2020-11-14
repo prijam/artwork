@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 class CardDetails extends StatefulWidget {
   final FirebaseUser firebaseUser;
 
@@ -29,9 +28,6 @@ class _CardDetailsState extends State<CardDetails> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.blue[800],
-    ));
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -227,72 +223,77 @@ class _CardDetailsState extends State<CardDetails> {
 
   Widget buildpageviewdetails(
       BuildContext context, DocumentSnapshot documentSnapshot, index) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-            color: colors[index],
-            border: Border.all(
-              color: Colors.grey.withOpacity(0.2),
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(15))),
-        child: Column(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              height: 30,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Image.asset("img/master.png")),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: 12.0,
-                    ),
-                    child: Text(
-                      documentSnapshot["card_expDate"] ?? "",
-                      style: TextStyle(color: Colors.white70),
-                    ),
-                  )
-                ],
+    return GestureDetector(
+      onLongPress: () {
+        _showMyDialog(index);
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: Container(
+          decoration: BoxDecoration(
+              color: colors[index],
+              border: Border.all(
+                color: Colors.grey.withOpacity(0.2),
               ),
-            ),
-            Container(
-                margin: EdgeInsets.only(top: 25),
-                height: 50,
-                child: Text(
-                  documentSnapshot["card_Number"] ?? "",
-                  style: TextStyle(
-                      color: Colors.white70,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18.0),
-                )),
-            Container(
-                height: 40,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Column(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                height: 30,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text(
-                        documentSnapshot["card_Holder_Name"] ?? "",
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                    ),
+                        padding: EdgeInsets.only(left: 8.0),
+                        child: Image.asset("img/master.png")),
                     Padding(
                       padding: EdgeInsets.only(
                         right: 12.0,
                       ),
                       child: Text(
-                        "Credit card",
-                        style: TextStyle(color: Colors.white),
+                        documentSnapshot["card_expDate"] ?? "",
+                        style: TextStyle(color: Colors.white70),
                       ),
                     )
                   ],
-                )),
-          ],
+                ),
+              ),
+              Container(
+                  margin: EdgeInsets.only(top: 25),
+                  height: 50,
+                  child: Text(
+                    documentSnapshot["card_Number"] ?? "",
+                    style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18.0),
+                  )),
+              Container(
+                  height: 40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: 10),
+                        child: Text(
+                          documentSnapshot["card_Holder_Name"] ?? "",
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 12.0,
+                        ),
+                        child: Text(
+                          "Credit card",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    ],
+                  )),
+            ],
+          ),
         ),
       ),
     );
@@ -438,5 +439,43 @@ class _CardDetailsState extends State<CardDetails> {
         ),
       ],
     );
+  }
+
+  void delete(int index) async {
+    CollectionReference col = Firestore.instance
+        .collection('users')
+        .document(widget.firebaseUser.uid)
+        .collection("User_Data")
+        .document("Payment_Details")
+        .collection("Card");
+    QuerySnapshot q = await col.getDocuments();
+    q.documents[index].reference.delete();
+  }
+
+  Future<void> _showMyDialog(int index) async {
+    return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Delete Card'),
+            content: SingleChildScrollView(
+                child: Text("Are you sure you want to delete the card?")),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Yes'),
+                onPressed: () {
+                  delete(index);
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 }

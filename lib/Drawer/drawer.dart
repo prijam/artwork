@@ -14,22 +14,18 @@ import 'package:flutter/services.dart';
 
 import 'Collection/firstView.dart';
 
-class drawer extends StatefulWidget {
+class HomeDrawer extends StatefulWidget {
   final FirebaseUser firebaseUser;
 
-  drawer({this.firebaseUser});
+  HomeDrawer({this.firebaseUser});
 
   @override
-  _drawerState createState() => _drawerState();
+  _HomeDrawerState createState() => _HomeDrawerState();
 }
 
-class _drawerState extends State<drawer> {
+class _HomeDrawerState extends State<HomeDrawer> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.dark));
     return StreamBuilder(
         stream: Auth.getUser(widget.firebaseUser.uid),
         builder: (BuildContext context, AsyncSnapshot<User> snapshot) {

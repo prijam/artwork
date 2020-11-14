@@ -180,14 +180,14 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                       ),
                       Positioned(
                         bottom: 140,
-                        right: 2,
+                        right: 8,
                         child: Container(
                           height: 18,
                           width: 80,
                           child: Text("Your price"),
                         ),
                       ),
-                      Positioned(bottom: 132, right: -19, child: pri()),
+                      Positioned(bottom: 125, right: -14 , child: pri()),
                       Positioned(bottom: 30, left: 40, child: messageBox()),
                       Positioned(
                         bottom: 10,

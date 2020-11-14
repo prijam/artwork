@@ -102,79 +102,77 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          key: _mainScaffoldState,
-          appBar: AppBar(
-            iconTheme: IconThemeData.fallback(),
-            backgroundColor: Colors.white,
-            elevation: 0.0,
-          ),
-          backgroundColor: Colors.white.withOpacity(1),
-          body: SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                height: 830,
-                child: Column(
-                  children: <Widget>[
-                    userInfo(),
-                    SizedBox(
-                      height: 40.0,
-                    ),
-                    div(),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    profileS(),
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    YourData(context),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    div1(),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Privacy(),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    div1(),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Notifi(),
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    div(),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    card(),
-                    SizedBox(
-                      height: 30.0,
-                    ),
-                    paymentSe(),
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    div1(),
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    paymentpro(),
-                    SizedBox(
-                      height: 35.0,
-                    ),
-                  ],
-                ),
+    return Scaffold(
+        key: _mainScaffoldState,
+        appBar: AppBar(
+          iconTheme: IconThemeData.fallback(),
+          backgroundColor: Colors.white,
+          elevation: 0.0,
+        ),
+        backgroundColor: Colors.white.withOpacity(1),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              height: 830,
+              child: Column(
+                children: <Widget>[
+                  userInfo(),
+                  SizedBox(
+                    height: 40.0,
+                  ),
+                  div(),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  profileS(),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  YourData(context),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  div1(),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Privacy(),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  div1(),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Notifi(),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  div(),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  card(),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  paymentSe(),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  div1(),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  paymentpro(),
+                  SizedBox(
+                    height: 35.0,
+                  ),
+                ],
               ),
             ),
-          )),
-    );
+          ),
+        ));
   }
 
   Widget userInfo() {

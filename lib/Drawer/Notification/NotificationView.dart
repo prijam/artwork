@@ -62,12 +62,16 @@ class _MessageListState extends State<MessageList> {
                 ],
               )),
           actions: <Widget>[
-            Image.asset(
-              "img/fea.jpg",
-            ),
             Container(
               width: 5.0,
             ),
+            IconButton(
+              icon: new Icon(
+                Icons.close,
+                color: Colors.black,
+              ),
+              onPressed: () => Navigator.of(context).pop(null),
+            )
           ],
         ),
         body: NestedScrollView(
@@ -98,25 +102,12 @@ class _MessageListState extends State<MessageList> {
                             width: 5.0,
                           ),
                           Text(
-                            "Inbox",
+                            "Messages",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 25.0,
                             ),
                           ),
-                          StreamBuilder(
-                              stream: Firestore.instance
-                                  .collection("users")
-                                  .document(widget.firebaseUser.uid)
-                                  .collection("User_Data")
-                                  .document("Messages")
-                                  .collection("Inbox")
-                                  .snapshots(),
-                              builder: (_, snapshot) {
-                                return snapshot.hasData
-                                    ? Text(snapshot.data.documents.length.toString())
-                                    : Text("");
-                              })
                         ],
                       ),
                     ),
@@ -132,6 +123,7 @@ class _MessageListState extends State<MessageList> {
                         .collection("User_Data")
                         .document("Messages")
                         .collection("Inbox")
+                        .orderBy("sendDate&Time", descending: true)
                         .snapshots(),
                     builder: (_, snapshot) {
                       return snapshot.hasData
@@ -145,8 +137,11 @@ class _MessageListState extends State<MessageList> {
                                 final hours =
                                     today.difference(uploadTime).inHours;
                                 final day = today.difference(uploadTime).inDays;
+
                                 final daysString = day;
                                 final hourString = hours;
+                                final min =
+                                    today.difference(uploadTime).inMinutes;
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
@@ -156,30 +151,75 @@ class _MessageListState extends State<MessageList> {
                                     Padding(
                                       padding: EdgeInsets.only(left: 8.0),
                                       child: Container(
-                                          height: 40,
-                                          width: 254,
+                                          height: 80,
                                           child: StreamBuilder<User>(
                                             stream: Auth.getUser(snapshot.data
                                                 .documents[index]["senderID"]),
                                             builder: (_, snapshot) {
                                               return snapshot.hasData
-                                                  ? Row(
+                                                  ? Column(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
                                                               .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: <Widget>[
-                                                        CircleAvatar(
-                                                          radius: 20.0,
-                                                          backgroundImage:
-                                                              NetworkImage(snapshot
-                                                                  .data
-                                                                  .profilePictureURL),
-                                                          backgroundColor:
-                                                              Colors
-                                                                  .transparent,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10,
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              decoration: BoxDecoration(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .withOpacity(
+                                                                          0.3),
+                                                                  shape: BoxShape
+                                                                      .circle),
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        5.0),
+                                                                child:
+                                                                    CircleAvatar(
+                                                                  radius: 20.0,
+                                                                  backgroundImage:
+                                                                      NetworkImage(snapshot
+                                                                          .data
+                                                                          .profilePictureURL),
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left:
+                                                                          270.0),
+                                                              child: Text(
+                                                                hourString == 0
+                                                                    ? min.toString() +
+                                                                        " min ago"
+                                                                    : daysString ==
+                                                                            0
+                                                                        ? hourString.toString() +
+                                                                            " hours ago"
+                                                                        : day.toString() +
+                                                                            " days ago",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .brown,
+                                                                    fontSize:
+                                                                        13.0,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w300),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                         Column(
                                                           children: <Widget>[
@@ -191,12 +231,12 @@ class _MessageListState extends State<MessageList> {
                                                                   .firstName,
                                                               style: TextStyle(
                                                                   color: Colors
-                                                                      .black,
+                                                                      .blueGrey,
                                                                   fontSize:
                                                                       16.0,
                                                                   fontWeight:
                                                                       FontWeight
-                                                                          .bold),
+                                                                          .w500),
                                                             ),
                                                           ],
                                                         )
@@ -207,18 +247,46 @@ class _MessageListState extends State<MessageList> {
                                           )),
                                     ),
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 60.0),
+                                      padding: const EdgeInsets.only(left: 8.0),
                                       child: Text(
                                         snapshot.data.documents[index]
                                             ["message"],
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                             color:
-                                                Colors.black.withOpacity(0.7),
-                                            fontWeight: FontWeight.w400),
+                                                Colors.black.withOpacity(0.8),
+                                            fontWeight: FontWeight.w600),
                                       ),
-                                    )
+                                    ),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10.0),
+                                          child: Text(
+                                            "Offered Price : " +
+                                                snapshot.data.documents[index]
+                                                    ["buyerPrice"],
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                                color: Colors.green
+                                                    .withOpacity(0.8),
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 195.0),
+                                          child: IconButton(
+                                            onPressed: () async {
+                                              delete(index);
+                                            },
+                                            icon: Icon(Icons.delete),
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 );
                               },
@@ -237,302 +305,20 @@ class _MessageListState extends State<MessageList> {
                                       ),
                                     ],
                                   ))
-                          : Container();
+                          : CircularProgressIndicator(
+                              backgroundColor: Colors.red,
+                            );
                     }))));
   }
 
-//  Widget firstTab() {
-//    return Container(
-//      margin: EdgeInsets.only(right: 5, top: 15),
-//      decoration: new BoxDecoration(
-//        border: Border.all(color: Colors.grey.withOpacity(0.8), width: 0.0),
-//        borderRadius: new BorderRadius.all(Radius.circular(15.0)),
-//      ),
-//      width: 380,
-//      height: 50,
-//      child: Row(
-//        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//        children: <Widget>[
-//          Padding(
-//              padding: EdgeInsets.only(left: 20),
-//              child: Text(
-//                "All messages",
-//                style: TextStyle(fontFamily: "font1", fontSize: 18.0),
-//              )),
-//          Padding(
-//            padding: EdgeInsets.only(right: 10),
-//            child: Icon(
-//              Icons.keyboard_arrow_down,
-//              color: Colors.grey,
-//              size: 30,
-//            ),
-//          )
-//        ],
-//      ),
-//    );
-//  }
-//
-//  Widget body() {
-//    return Container(
-//      height: 698,
-//      width: 350,
-//      child: StreamBuilder(
-//        stream: Firestore.instance
-//            .collection("users")
-//            .document(widget.firebaseUser.uid)
-//            .collection("User_Data")
-//            .document("Messages")
-//            .collection("Inbox")
-//            .snapshots(),
-//        builder: (_, snapshot) {
-//          return snapshot.hasData
-//              ? ListView.builder(
-//              itemCount: snapshot.data.documents.length,
-//              itemBuilder: (_, index) {
-//                var uploadTime = DateTime.parse(snapshot
-//                    .data.documents[index]["sendDate&Time"]
-//                    .toDate()
-//                    .toString());
-//                final hours = today.difference(uploadTime).inHours;
-//                final day = today.difference(uploadTime).inDays;
-//                final daysString = day;
-//                final hourString = hours;
-//
-//                return Padding(
-//                  padding: const EdgeInsets.only(top: 10),
-//                  child: InkWell(
-//                    onTap: () {},
-//                    child: Card(
-//                      elevation: 5.0,
-//                      shape: RoundedRectangleBorder(
-//                        side: BorderSide(color: Colors.white70, width: 1),
-//                        borderRadius: BorderRadius.circular(10),
-//                      ),
-//                      child: Container(
-//                        margin: EdgeInsets.only(top: 10),
-//                        decoration: BoxDecoration(
-//                          borderRadius:
-//                          BorderRadius.all(Radius.circular(10.0)),
-//                        ),
-//                        height: 230,
-//                        width: 250,
-//                        child: Stack(
-//                          children: <Widget>[
-//                            Positioned(
-//                                top: 40,
-//                                left: 20,
-//                                child: Container(
-//                                  child: ClipRRect(
-//                                    borderRadius: BorderRadius.all(
-//                                        Radius.circular(10.0)),
-//                                    child: Image.network(
-//                                      snapshot.data.documents[index]
-//                                      ["itemImage"],
-//                                      height: 100,
-//                                      width: 290,
-//                                      fit: BoxFit.cover,
-//                                      filterQuality: FilterQuality.high,
-//                                    ),
-//                                  ),
-//                                )),
-//                            Positioned(
-//                              left: 22,
-//                              child: Container(
-//                                  height: 40,
-//                                  width: 254,
-//                                  child: StreamBuilder<User>(
-//                                    stream: Auth.getUser(snapshot
-//                                        .data.documents[index]["senderID"]),
-//                                    builder: (_, snapshot) {
-//                                      return snapshot.hasData
-//                                          ? Row(
-//                                        children: <Widget>[
-//                                          CircleAvatar(
-//                                            radius: 17.0,
-//                                            backgroundImage:
-//                                            NetworkImage(snapshot
-//                                                .data
-//                                                .profilePictureURL),
-//                                            backgroundColor:
-//                                            Colors.transparent,
-//                                          ),
-//                                          Padding(
-//                                            padding:
-//                                            const EdgeInsets.only(
-//                                                top: 2.0,
-//                                                left: 10),
-//                                            child: Text(
-//                                              snapshot.data.firstName,
-//                                              style: TextStyle(
-//                                                  color: Colors
-//                                                      .blueAccent[
-//                                                  400],
-//                                                  fontSize: 16.0,
-//                                                  fontWeight:
-//                                                  FontWeight
-//                                                      .w600),
-//                                            ),
-//                                          )
-//                                        ],
-//                                      )
-//                                          : Container();
-//                                    },
-//                                  )),
-//                            ),
-//                            Positioned(
-//                              top: 146,
-//                              right: -3,
-//                              child: Container(
-//                                height: 20,
-//                                width: 80,
-//                                child: Text(
-//                                  daysString == 0 ? "$hourString hrs ago" : "$daysString days ago",
-//                                  style: TextStyle(
-//                                      fontFamily: "font2",
-//                                      color: Colors.grey),
-//                                ),
-//                              ),
-//                            ),
-//                            Positioned(
-//                              bottom: 5,
-//                              right: -3,
-//                              child: Container(
-//                                height: 20,
-//                                width: 80,
-//                                child: Text(
-//                                  snapshot.data.documents[index]
-//                                  ["buyerPrice"],
-//                                  style: TextStyle(
-//                                      fontFamily: "font2",
-//                                      color: Colors.red),
-//                                ),
-//                              ),
-//                            ),
-//                            Positioned(
-//                              bottom: 20,
-//                              right: 13,
-//                              child: Container(
-//                                height: 20,
-//                                width: 60,
-//                                child: Text(
-//                                  "Offered",
-//                                  style: TextStyle(
-//                                      fontFamily: "font2",
-//                                      fontSize: 13.0,
-//                                      color: Colors.grey),
-//                                ),
-//                              ),
-//                            ),
-//                            Positioned(
-//                              bottom: 43,
-//                              left: 20,
-//                              child: Container(
-//                                height: 45,
-//                                width: 210,
-//                                child: Text(
-//                                  snapshot.data.documents[index]["title"],
-//                                  style: TextStyle(
-//                                      fontFamily: "font2",
-//                                      color: Colors.grey),
-//                                ),
-//                              ),
-//                            ),
-//                            Positioned(
-//                              bottom: 1,
-//                              left: 20,
-//                              child: Container(
-//                                height: 65,
-//                                width: 228,
-//                                child: Text(
-//                                  snapshot.data.documents[index]["message"],
-//                                  style: TextStyle(
-//                                      fontFamily: "font2",
-//                                      color: Colors.black.withOpacity(0.9)),
-//                                ),
-//                              ),
-//                            ),
-//                          ],
-//                        ),
-//                      ),
-//                    ),
-//                  ),
-////                      child: Card(
-////                        elevation: 1.0,
-////                        child: Container(
-////                            height: 130,
-////                            width: 250,
-////                            child: Stack(
-////                              children: <Widget>[
-//////                                Positioned(
-//////                                  top:30,
-//////                                  child: StreamBuilder<User>(
-//////                                    stream: Auth.getUser(
-//////                                        snapshot.data.documents[index]["senderID"]),
-//////                                    builder: (_, snapshot) {
-//////                                      return snapshot.hasData
-//////                                          ? Row(
-//////                                              children: <Widget>[
-//////                                                Container(
-//////                                                  margin: EdgeInsets.only(
-//////                                                      left: 20, bottom:30),
-//////                                                  child: CircleAvatar(
-//////                                                    radius: 22.0,
-//////                                                    backgroundImage: NetworkImage(
-//////                                                        snapshot.data
-//////                                                            .profilePictureURL),
-//////                                                    backgroundColor:
-//////                                                        Colors.transparent,
-//////                                                  ),
-//////                                                ),
-//////                                                Container(
-//////                                                    margin: EdgeInsets.only(
-//////                                                        bottom: 30, left: 14),
-//////                                                    child: Text(
-//////                                                      snapshot.data.firstName,
-//////                                                      style: TextStyle(
-//////                                                          color: Colors.blueGrey,
-//////                                                          fontFamily: 'font2'),
-//////                                                    ))
-//////                                              ],
-//////                                            )
-//////                                          : Container();
-//////                                    },
-//////                                  ),
-//////                                ),
-//////                                Positioned(
-//////                                    top: 1,
-//////                                    left: 200,
-//////                                    child: Container(
-//////                                        height: 40,
-//////                                        width: 250,
-//////                                        child: Text(
-//////                                          snapshot.data.documents[index]
-//////                                              ["buyerPrice"],
-//////                                          style: TextStyle(
-//////                                              color: Colors.grey,
-//////                                              fontWeight: FontWeight.w800),
-//////                                        ))),
-//////                                Positioned(
-//////                                    top: 22,
-//////                                    left: 78,
-//////                                    child: Container(
-//////                                        height: 40,
-//////                                        width: 250,
-//////                                        child: Text(
-//////                                          snapshot.data.documents[index]
-//////                                              ["message"],
-//////                                          style: TextStyle(
-//////                                              color: Colors.grey,
-//////                                              fontWeight: FontWeight.w800),
-//////                                        ))),
-////                              ],
-////                            )),
-////                      ),
-//                );
-//              })
-//              : Container();
-//        },
-//      ),
-//    );
-//  }
+  void delete(int index) async {
+    CollectionReference col = Firestore.instance
+        .collection("users")
+        .document(widget.firebaseUser.uid)
+        .collection("User_Data")
+        .document("Messages")
+        .collection("Inbox");
+    QuerySnapshot q = await col.getDocuments();
+    q.documents[index].reference.delete();
+  }
 }

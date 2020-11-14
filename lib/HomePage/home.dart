@@ -46,11 +46,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
-      drawer: drawer(
+      drawer: HomeDrawer(
         firebaseUser: widget.firebaseUser,
       ),
       body: SafeArea(
@@ -60,7 +59,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Column(
               children: <Widget>[
                 SizedBox(
-                  height:5.0,
+                  height: 5.0,
                 ),
                 header(),
                 SizedBox(
@@ -475,6 +474,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: TabBar(
           controller: _tabController,
           isScrollable: true,
+          unselectedLabelStyle: TextStyle(color: Colors.grey),
           unselectedLabelColor: Colors.grey,
           indicator:
               CircleTabIndicator(color: Colors.deepOrangeAccent, radius: 3),
@@ -535,12 +535,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   return artlayout(context, snapshot.data.documents[index]);
                 })
             : Center(
-          child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(
-              Color.fromRGBO(212, 20, 15, 1.0),
-            ),
-          ),
-        );
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(212, 20, 15, 1.0),
+                  ),
+                ),
+              );
       },
     );
   }
@@ -632,12 +632,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   return artlayout(context, snapshot.data.documents[index]);
                 })
             : Center(
-          child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(
-              Color.fromRGBO(212, 20, 15, 1.0),
-            ),
-          ),
-        );
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(212, 20, 15, 1.0),
+                  ),
+                ),
+              );
       },
     );
   }
@@ -729,12 +729,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   return illuview(context, snapshot.data.documents[index]);
                 })
             : Center(
-          child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(
-              Color.fromRGBO(212, 20, 15, 1.0),
-            ),
-          ),
-        );
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(212, 20, 15, 1.0),
+                  ),
+                ),
+              );
       },
     );
   }
@@ -825,12 +825,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   return paintView(context, snapshot.data.documents[index]);
                 })
             : Center(
-          child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(
-              Color.fromRGBO(212, 20, 15, 1.0),
-            ),
-          ),
-        );
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(212, 20, 15, 1.0),
+                  ),
+                ),
+              );
       },
     );
   }

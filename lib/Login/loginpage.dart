@@ -170,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(color: Colors.black),
 
               decoration: new InputDecoration(
-                  hintText: "prijam36@gmail.com",
+                  hintText: "Email",
                   filled: true,
                   labelStyle: TextStyle(
                     letterSpacing: 0.8,
@@ -215,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
               controller: _password,
               style: TextStyle(color: Colors.black),
               decoration: new InputDecoration(
-                  hintText: "password",
+                  hintText: "Password",
                   filled: true,
                   labelStyle: TextStyle(
                     letterSpacing: 0.8,
