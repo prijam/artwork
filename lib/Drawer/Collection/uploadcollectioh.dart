@@ -27,10 +27,15 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
   TextEditingController msgcon = TextEditingController();
   String _price = "";
   TextEditingController _pri = TextEditingController();
-  DateTime now = new DateTime.now();
+
+  bool showloading = false;
 
   Future _sendMsg(
       BuildContext context, AsyncSnapshot snapshot, int index) async {
+    DateTime now = DateTime.now();
+    setState(() {
+      showloading = true;
+    });
     Firestore.instance
         .collection("users")
         .document(snapshot.data.documents[index]["uID"])
@@ -201,20 +206,32 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                           ),
                         ),
                         messageBox(),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 50.0, right: 50, top: 8),
-                          child: RaisedButton(
-                            color: Colors.deepOrange,
-                            onPressed: () {
-                              _sendMsg(context, snapshot, index);
-                            },
-                            child: Text(
-                              "Send Message",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
+                        showloading
+                            ? Container(
+                                width: 100,
+                                height: 50,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Color.fromRGBO(212, 20, 15, 1.0),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 50.0, right: 50, top: 8),
+                                child: RaisedButton(
+                                  color: Colors.deepOrange,
+                                  onPressed: () {
+                                    _sendMsg(context, snapshot, index);
+                                  },
+                                  child: Text(
+                                    "Send Message",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
                       ],
                     )),
               ),
@@ -261,11 +278,23 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       body: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
         child: Container(
-          height: 1000,
+          height: MediaQuery.of(context).size.height,
           child: Stack(
             children: <Widget>[
+              Container(
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height,
+              ),
               tabbar(),
               Positioned(top: 40, child: tabview()),
+              // Positioned(
+              //   bottom: 85.0,
+              //   child: Container(
+              //     height: 100,
+              //     width: 500,
+              //     decoration: BoxDecoration(color: Colors.black),
+              //   ),
+              // )
             ],
           ),
         ),
@@ -332,8 +361,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
 
   Widget tabview() {
     return Container(
-      height: 760.0,
-      width: 400,
+      height: 765.0,
+      width: 412,
       child: TabBarView(
         controller: _tabController,
         children: <Widget>[explore(), art(), paint(), craft(), illu()],
@@ -828,7 +857,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
             onChanged: (value) {
               message = value;
             },
-            cursorColor: Colors.green,
+            cursorColor: Colors.grey,
             textInputAction: TextInputAction.done,
             maxLines: 15,
             controller: msgcon,

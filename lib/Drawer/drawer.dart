@@ -1,4 +1,5 @@
 import 'package:artstore/Drawer/Messages/msg.dart';
+import 'package:artstore/Drawer/Mycart/cart.dart';
 import 'package:artstore/Drawer/Notification/NotificationView.dart';
 import 'package:artstore/Drawer/Payment/creditCard.dart';
 import 'package:artstore/Drawer/Payment/details.dart';
@@ -87,8 +88,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           width: 150,
                           height: 40,
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Icon(
                                 Icons.dehaze,
@@ -130,15 +130,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => CreditCard(
-                                              firebaseUser:
-                                                  widget.firebaseUser,
+                                              firebaseUser: widget.firebaseUser,
                                             )))
                                 : Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => CardDetails(
-                                              firebaseUser:
-                                                  widget.firebaseUser,
+                                              firebaseUser: widget.firebaseUser,
                                             )));
                           });
                         },
@@ -147,16 +145,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           width: 150,
                           height: 40,
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Icon(
                                 Icons.credit_card,
                                 color: Colors.black.withOpacity(0.7),
                               ),
                               Container(
-                                margin:
-                                    EdgeInsets.only(bottom: 3, right: 10),
+                                margin: EdgeInsets.only(bottom: 3, right: 10),
                                 width: 100,
                                 height: 20,
                                 child: Text(
@@ -190,8 +186,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           width: 150,
                           height: 40,
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Padding(
                                 padding: EdgeInsets.only(top: 4.8, left: 1),
@@ -235,8 +230,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           width: 150,
                           height: 40,
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Icon(
                                 Icons.filter,
@@ -267,27 +261,27 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => HomePage()));
+                                  builder: (context) => MyCart(
+                                        uid: widget.firebaseUser.uid,
+                                      )));
                         },
                         child: Container(
                           margin: EdgeInsets.only(right: 50),
                           width: 150,
                           height: 40,
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Icon(
-                                Icons.notifications_none,
+                                Icons.shopping_cart,
                                 color: Colors.black.withOpacity(0.7),
                               ),
                               Container(
-                                margin:
-                                    EdgeInsets.only(bottom: 3, right: .5),
+                                margin: EdgeInsets.only(bottom: 3, right: .5),
                                 width: 100,
                                 height: 20,
                                 child: Text(
-                                  "Notifications",
+                                  "My Cart",
                                   style: TextStyle(
                                       letterSpacing: 0.3,
                                       fontSize: 18.0,
@@ -353,8 +347,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           width: 150,
                           height: 40,
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Icon(
                                 Icons.exit_to_app,

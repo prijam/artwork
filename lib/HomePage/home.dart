@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   TabController _tabController;
   firestore fire = firestore();
+  bool alreadytoCart = false;
 
   @override
   void initState() {
@@ -297,12 +298,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             children: <Widget>[
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Details(
-                                post: documentSnapshot,
-                              )));
+                  Firestore.instance
+                      .collection("users")
+                      .document(widget.firebaseUser.uid)
+                      .collection("User_Data")
+                      .document("My_Cart")
+                      .collection("OrderItems")
+                      .getDocuments()
+                      .asStream()
+                      .listen((event) {
+                    List data = [];
+                    for (int i = 0; i < event.documents.length; i++) {
+                      data.add(event.documents[i].documentID);
+                    }
+
+                    if (data.contains(documentSnapshot.documentID) == true) {
+                      setState(() {
+                        alreadytoCart = true;
+                      });
+                    } else {
+                      alreadytoCart = false;
+                    }
+                  });
+                  Future.delayed(Duration(seconds: 1), () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Details(
+                                  post: documentSnapshot,
+                                  uid: widget.firebaseUser.uid,
+                                  added: alreadytoCart,
+                                )));
+                  });
                 },
                 child: Container(
                   height: 170,

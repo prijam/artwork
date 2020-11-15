@@ -6,8 +6,10 @@ import 'package:flutter/services.dart';
 
 class Details extends StatefulWidget {
   final DocumentSnapshot post;
+  final bool added;
+  final String uid;
 
-  Details({this.post});
+  Details({this.post, this.added, this.uid});
 
   @override
   _DetailsState createState() => _DetailsState();
@@ -18,10 +20,16 @@ class _DetailsState extends State<Details> {
   firestore fire = firestore();
 
   @override
+  void initState() {
+    print(widget.added);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        ));
+      statusBarColor: Colors.transparent,
+    ));
     return Scaffold(
       key: _scaffoldkey,
       extendBodyBehindAppBar: true,
@@ -34,6 +42,21 @@ class _DetailsState extends State<Details> {
         iconTheme: IconThemeData.fallback(),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          Container(
+              decoration:
+                  BoxDecoration(color: Colors.blueGrey, shape: BoxShape.circle),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Icon(
+                  Icons.shopping_cart,
+                  color: Colors.white,
+                ),
+              )),
+          SizedBox(
+            width: 10,
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -97,8 +120,11 @@ class _DetailsState extends State<Details> {
                     backgroundColor: Colors.transparent,
                   ),
                 ),
+                SizedBox(
+                  width: 10,
+                ),
                 Padding(
-                  padding: EdgeInsets.only(right: 28.0, top: 7),
+                  padding: EdgeInsets.only(right: 20.0, top: 7),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -133,25 +159,90 @@ class _DetailsState extends State<Details> {
                 )
               ],
             ),
-            height: 100,
-            width: 270,
           ),
-          RaisedButton(
-            elevation: 0.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0),
-                side: BorderSide(color: Colors.red)),
-            color: Colors.deepOrange,
-            onPressed: () {},
-            child: Text(
-              "Follow",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-            ),
-          ),
+          // addtoCart
+          //     ? RaisedButton(
+          //         elevation: 0.0,
+          //         shape: RoundedRectangleBorder(
+          //             borderRadius: BorderRadius.circular(5.0),
+          //             side: BorderSide(color: Colors.red)),
+          //         color: Colors.green,
+          //         onPressed: () {},
+          //         child: Text(
+          //           "Added to Cart",
+          //           style: TextStyle(
+          //               color: Colors.white, fontWeight: FontWeight.w600),
+          //         ),
+          //       )
+          widget.added
+              ? RaisedButton(
+                  elevation: 0.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      side: BorderSide(color: Colors.green)),
+                  color: Colors.green,
+                  onPressed: () {
+                    _scaffoldkey.currentState.showSnackBar(SnackBar(
+                      backgroundColor: Colors.green,
+                      duration: Duration(seconds: 2),
+                      elevation: 6.0,
+                      behavior: SnackBarBehavior.floating,
+                      content: Row(
+                        children: <Widget>[
+                          Icon(Icons.playlist_add),
+                          SizedBox(
+                            width: 20.0,
+                          ),
+                          Expanded(
+                            child: Text("Already added to Cart."),
+                          )
+                        ],
+                      ),
+                    ));
+                  },
+                  child: Text(
+                    "Added to Cart",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 10.0),
+                  ),
+                )
+              : RaisedButton(
+                  elevation: 0.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      side: BorderSide(color: Colors.red)),
+                  color: Colors.deepOrange,
+                  onPressed: () {
+                    addtocart();
+                  },
+                  child: Text(
+                    "Add to cart",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+                ),
         ],
       ),
     );
+  }
+
+  void addtocart() {
+    Map<String, dynamic> regionData = new Map<String, dynamic>();
+    DocumentReference documentReference = Firestore.instance
+        .collection("users")
+        .document(widget.uid)
+        .collection("User_Data")
+        .document("My_Cart")
+        .collection("OrderItems")
+        .document(widget.post.documentID);
+    documentReference.setData({
+      "title": widget.post.data["title"],
+      "price": widget.post.data["price"],
+      "itemImage": widget.post.data["img"],
+      "itemType": widget.post.data["arttype"],
+    });
   }
 
   Widget details() {
@@ -230,15 +321,16 @@ class _DetailsState extends State<Details> {
             child: Stack(
               children: <Widget>[
                 Positioned(
-                  left: 11.5,
-                  top: 10.0,
+                  right: 25.0,
+                  top: 8.0,
                   child: Text(
                     "Rs",
                     style: TextStyle(color: Colors.grey),
                   ),
                 ),
                 Positioned(
-                  top: 30,
+                  top: 25,
+                  right: 12.0,
                   child: Text(
                     widget.post.data["price"] ?? "",
                     textAlign: TextAlign.start,
@@ -248,47 +340,6 @@ class _DetailsState extends State<Details> {
                         fontWeight: FontWeight.w700),
                   ),
                 ),
-                Positioned(
-                  left: 55,
-                  top: 15,
-                  child: InkWell(
-                    onTap: () {
-                      _scaffoldkey.currentState.showSnackBar(SnackBar(
-                        backgroundColor: Colors.green,
-                        duration: Duration(seconds: 1),
-                        elevation: 6.0,
-                        behavior: SnackBarBehavior.floating,
-                        content: Row(
-                          children: <Widget>[
-                            Icon(Icons.playlist_add),
-                            SizedBox(
-                              width: 20.0,
-                            ),
-                            Expanded(
-                              child: Text("Feature to be added"),
-                            )
-                          ],
-                        ),
-                      ));
-                    },
-                    child: Container(
-                      height: 30,
-                      width: 60,
-                      decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(5.0)),
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 5),
-                        child: Text(
-                          "Buy",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.green, fontWeight: FontWeight.w400),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
               ],
             ),
           ),

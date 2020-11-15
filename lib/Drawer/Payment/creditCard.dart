@@ -41,11 +41,12 @@ class _CreditCardState extends State<CreditCard> {
       "card_Number": _creditCardNumber,
       "card_expDate": _expDate,
       "card_CVV": _securityCode
-    }).whenComplete(() =>
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => CardDetails(
-      firebaseUser: widget.firebaseUser,
-    ))));
+    }).whenComplete(() => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CardDetails(
+                      firebaseUser: widget.firebaseUser,
+                    ))));
   }
 
   Widget errorbar() {
@@ -96,9 +97,6 @@ class _CreditCardState extends State<CreditCard> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.blue[800],
-    ));
     return Scaffold(
         key: _scaffoldState,
         backgroundColor: Colors.white,
@@ -122,7 +120,6 @@ class _CreditCardState extends State<CreditCard> {
                   children: <Widget>[
                     Positioned(
                       top: 230,
-
                       child: Container(
                           height: 900,
                           width: 415,
@@ -149,7 +146,7 @@ class _CreditCardState extends State<CreditCard> {
                                   )),
                               Padding(
                                 padding: EdgeInsets.only(
-                                    left: 20, right: 20, top:15),
+                                    left: 20, right: 20, top: 15),
                                 child: TextField(
                                     keyboardType: TextInputType.number,
                                     inputFormatters: [
@@ -347,14 +344,15 @@ class _CreditCardState extends State<CreditCard> {
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.only(top:40),
+                                margin: EdgeInsets.only(top: 40),
                                 width: 340,
                                 height: 50,
                                 child: FlatButton(
                                   onPressed: () {
                                     _scaffoldState.currentState
                                         .showSnackBar(snackbar1());
-                                    Future.delayed(Duration(milliseconds: 450), () {
+                                    Future.delayed(Duration(milliseconds: 450),
+                                        () {
                                       _saveCard();
                                     });
                                   },
@@ -387,7 +385,7 @@ class _CreditCardState extends State<CreditCard> {
                     ),
                     Positioned(
                       top: 80,
-                      left:16.5,
+                      left: 16.5,
                       child: Container(
                         height: 250,
                         width: 380,
