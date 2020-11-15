@@ -6,7 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter_svg/svg.dart';
+
+import 'package:url_launcher/url_launcher.dart';
 
 class Collection extends StatefulWidget {
   final FirebaseUser firebaseUser;
@@ -28,8 +29,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
   TextEditingController _pri = TextEditingController();
   DateTime now = new DateTime.now();
 
-  Future _sendMsg(BuildContext context, AsyncSnapshot snapshot,
-      int index) async {
+  Future _sendMsg(
+      BuildContext context, AsyncSnapshot snapshot, int index) async {
     Firestore.instance
         .collection("users")
         .document(snapshot.data.documents[index]["uID"])
@@ -61,101 +62,124 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
               padding: const EdgeInsets.only(right: 18.0, left: 18.0),
               child: SingleChildScrollView(
                 child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                        color: Colors.grey.withOpacity(0.2),
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(25))),
-                  margin: EdgeInsets.only(top: 100),
-                  height: 500,
-                  width: 400,
-                  child: Stack(
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(left: 300.0),
-                        child: IconButton(
-                            icon: new Icon(
-                              Icons.close,
-                              color: Colors.red,
-                              size: 35.0,
-                            ),
-                            onPressed: () {
-                              msgcon.clear();
-                              _pri.clear();
-                              Navigator.of(context).pop(null);
-                            }),
-                      ),
-                      Positioned(
-                        top: 50,
-                        left: 42,
-                        child: Container(
-                            height: 50,
-                            width: 250,
-                            child: StreamBuilder<User>(
-                              stream: Auth.getUser(
-                                  snapshot.data.documents[index]["uID"]),
-                              builder: (_, snapshot) {
-                                return snapshot.hasData
-                                    ? Row(
-                                  children: <Widget>[
-                                    CircleAvatar(
-                                      radius: 17.0,
-                                      backgroundImage: NetworkImage(
-                                          snapshot
-                                              .data.profilePictureURL),
-                                      backgroundColor: Colors.transparent,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.grey.withOpacity(0.2),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(25))),
+                    margin: EdgeInsets.only(top: 100),
+                    height: 700,
+                    width: 450,
+                    child: ListView(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 8.0, top: 5),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                                icon: new Icon(
+                                  Icons.close,
+                                  color: Colors.black,
+                                  size: 35.0,
+                                ),
+                                onPressed: () {
+                                  msgcon.clear();
+                                  _pri.clear();
+                                  Navigator.of(context).pop(null);
+                                }),
+                          ),
+                        ),
+                        StreamBuilder<User>(
+                          stream: Auth.getUser(
+                              snapshot.data.documents[index]["uID"]),
+                          builder: (_, snapshot) {
+                            return snapshot.hasData
+                                ? Padding(
+                                    padding: EdgeInsets.only(left: 15.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              color:
+                                                  Colors.grey.withOpacity(0.3),
+                                              shape: BoxShape.circle),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: CircleAvatar(
+                                              radius: 20.0,
+                                              backgroundImage: NetworkImage(
+                                                  snapshot
+                                                      .data.profilePictureURL),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 3.0, left: 18),
+                                          child: Text(
+                                            snapshot.data.firstName,
+                                            style: TextStyle(
+                                                color: Colors.blueGrey,
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.w800),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 80.0),
+                                          child: FlatButton(
+                                            child: Icon(
+                                              Icons.call,
+                                              color: Colors.white,
+                                            ),
+                                            color: Colors.green,
+                                            onPressed: () => launch(
+                                                "tel://${snapshot.data.number}"),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 6.0, left: 15),
-                                      child: Text(
-                                        snapshot.data.firstName,
-                                        style: TextStyle(
-                                            color: Colors.blueAccent[400],
-                                            fontSize: 16.0,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    )
-                                  ],
-                                )
-                                    : Container();
-                              },
+                                  )
+                                : Container();
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              snapshot.data.documents[index]["itemImage"],
+                              fit: BoxFit.cover,
+                              filterQuality: FilterQuality.high,
+                              height: 300,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.only(left: 15.0, top: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  snapshot.data.documents[index]["title"],
+                                  style: TextStyle(
+                                      fontFamily: "font2", fontSize: 18),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(right: 8.0),
+                                  child: Text(
+                                    snapshot.data.documents[index]["price"]
+                                        .replaceAllMapped(reg, mathFunc),
+                                    style: TextStyle(
+                                        fontFamily: "font2", color: Colors.red),
+                                  ),
+                                ),
+                              ],
                             )),
-                      ),
-                      Positioned(
-                        top: 100,
-                        left: 40,
-                        child: Container(
-                          height: 200,
-                          width: 300,
-                          child: Image.network(
-                            snapshot.data.documents[index]["itemImage"],
-                            fit: BoxFit.cover,
-                            filterQuality: FilterQuality.high,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 295,
-                        left: 40,
-                        child: Container(
-                          margin: EdgeInsets.only(right: 40, top: 15),
-                          height: 20,
-                          width: 254,
-                          child: Text(
-                            snapshot.data.documents[index]["title"],
-                            style: TextStyle(fontFamily: "font2"),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 328,
-                        left: 40,
-                        child: Container(
-                          margin: EdgeInsets.only(right: 95),
-                          height: 70,
-                          width: 250,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15.0, top: 10),
                           child: Text(
                             snapshot.data.documents[index]["description"],
                             style: TextStyle(
@@ -163,38 +187,23 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                                 color: Colors.black.withOpacity(0.5)),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 173,
-                        right: 1,
-                        child: Container(
-                          height: 20,
-                          width: 80,
-                          child: Text(
-                            snapshot.data.documents[index]["price"]
-                                .replaceAllMapped(reg, mathFunc),
-                            style: TextStyle(
-                                fontFamily: "font2", color: Colors.red),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 15.0, bottom: 10),
+                          child: Row(
+                            children: [
+                              Text("Your Bidding Price :"),
+                              pri(),
+                            ],
                           ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 140,
-                        right: 8,
-                        child: Container(
-                          height: 18,
-                          width: 80,
-                          child: Text("Your price"),
-                        ),
-                      ),
-                      Positioned(bottom: 125, right: -14 , child: pri()),
-                      Positioned(bottom: 30, left: 40, child: messageBox()),
-                      Positioned(
-                        bottom: 10,
-                        right: 10,
-                        child: Container(
-                          width: 350,
-                          height: 40,
+                        messageBox(),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 50.0, right: 50, top: 8),
                           child: RaisedButton(
                             color: Colors.deepOrange,
                             onPressed: () {
@@ -206,10 +215,8 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    )),
               ),
             ),
           );
@@ -341,86 +348,88 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       builder: (_, snapshot) {
         return snapshot.hasData
             ? Container(
-          margin: EdgeInsets.only(top: 10),
-          child: snapshot.data.documents.length != 0
-              ? StaggeredGridView.countBuilder(
-            crossAxisCount: 2,
-            mainAxisSpacing: 13,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (context,) =>
-                          _onTapImage(context, snapshot));
-                },
-                child: Container(
-                  margin: EdgeInsets.only(left: 10, right: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(12))),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12.0),
-                    ),
-                    child: FadeInImage.assetNetwork(
-                      placeholder: "img/img.gif",
-                      image: snapshot.data.documents[index]
-                      ["itemImage"],
-                      fit: BoxFit.cover,
-                      fadeInCurve: Curves.easeIn,
-                    ),
+                margin: EdgeInsets.only(top: 10),
+                child: snapshot.data.documents.length != 0
+                    ? StaggeredGridView.countBuilder(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 13,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (
+                                    context,
+                                  ) =>
+                                      _onTapImage(context, snapshot));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "img/img.gif",
+                                  image: snapshot.data.documents[index]
+                                      ["itemImage"],
+                                  fit: BoxFit.cover,
+                                  fadeInCurve: Curves.easeIn,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        staggeredTileBuilder: (index) {
+                          return StaggeredTile.count(
+                              1, index.isEven ? 1.0 : 1.60);
+                        },
+                      )
+                    : Container(
+                        child: Container(
+                            margin: EdgeInsets.only(top: 80, left: 20),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: 70),
+                                  height: 150,
+                                  child: Image.asset(
+                                    "img/as.png",
+                                    filterQuality: FilterQuality.high,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      "Nothing to see here",
+                                      style: TextStyle(
+                                          fontFamily: "font2", fontSize: 18.0),
+                                    )),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30, top: 10),
+                                    child: Text(
+                                      "Swipe left or right to see more products",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.grey.withOpacity(0.8)),
+                                    )),
+                              ],
+                            )),
+                      ),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(212, 20, 15, 1.0),
                   ),
                 ),
               );
-            },
-            staggeredTileBuilder: (index) {
-              return StaggeredTile.count(
-                  1, index.isEven ? 1.0 : 1.60);
-            },
-          )
-              : Container(
-            child: Container(
-                margin: EdgeInsets.only(top: 80, left: 20),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(right: 70),
-                      height: 150,
-                      child: Image.asset(
-                        "img/as.png",
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Container(
-                        margin: EdgeInsets.only(right: 30),
-                        child: Text(
-                          "Nothing to see here",
-                          style: TextStyle(
-                              fontFamily: "font2", fontSize: 18.0),
-                        )),
-                    Container(
-                        margin: EdgeInsets.only(right: 30, top: 10),
-                        child: Text(
-                          "Swipe left or right to see more products",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.grey.withOpacity(0.8)),
-                        )),
-                  ],
-                )),
-          ),
-        )
-            : Center(
-          child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(
-              Color.fromRGBO(212, 20, 15, 1.0),
-            ),
-          ),
-        );
       },
     );
   }
@@ -435,86 +444,88 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       builder: (_, snapshot) {
         return snapshot.hasData
             ? Container(
-          margin: EdgeInsets.only(top: 10),
-          child: snapshot.data.documents.length != 0
-              ? StaggeredGridView.countBuilder(
-            crossAxisCount: 2,
-            mainAxisSpacing: 13,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (context,) =>
-                          _onTapImage(context, snapshot));
-                },
-                child: Container(
-                  margin: EdgeInsets.only(left: 10, right: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(12))),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12.0),
-                    ),
-                    child: FadeInImage.assetNetwork(
-                      placeholder: "img/img.gif",
-                      image: snapshot.data.documents[index]
-                      ["itemImage"],
-                      fit: BoxFit.cover,
-                      fadeInCurve: Curves.easeIn,
-                    ),
+                margin: EdgeInsets.only(top: 10),
+                child: snapshot.data.documents.length != 0
+                    ? StaggeredGridView.countBuilder(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 13,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (
+                                    context,
+                                  ) =>
+                                      _onTapImage(context, snapshot));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "img/img.gif",
+                                  image: snapshot.data.documents[index]
+                                      ["itemImage"],
+                                  fit: BoxFit.cover,
+                                  fadeInCurve: Curves.easeIn,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        staggeredTileBuilder: (index) {
+                          return StaggeredTile.count(
+                              1, index.isEven ? 1.0 : 1.60);
+                        },
+                      )
+                    : Container(
+                        child: Container(
+                            margin: EdgeInsets.only(top: 80, left: 20),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: 70),
+                                  height: 150,
+                                  child: Image.asset(
+                                    "img/as.png",
+                                    filterQuality: FilterQuality.high,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      "Nothing to see here",
+                                      style: TextStyle(
+                                          fontFamily: "font2", fontSize: 18.0),
+                                    )),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30, top: 10),
+                                    child: Text(
+                                      "Swipe left or right to see more products",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.grey.withOpacity(0.8)),
+                                    )),
+                              ],
+                            )),
+                      ),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(212, 20, 15, 1.0),
                   ),
                 ),
               );
-            },
-            staggeredTileBuilder: (index) {
-              return StaggeredTile.count(
-                  1, index.isEven ? 1.0 : 1.60);
-            },
-          )
-              : Container(
-            child: Container(
-                margin: EdgeInsets.only(top: 80, left: 20),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(right: 70),
-                      height: 150,
-                      child: Image.asset(
-                        "img/as.png",
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Container(
-                        margin: EdgeInsets.only(right: 30),
-                        child: Text(
-                          "Nothing to see here",
-                          style: TextStyle(
-                              fontFamily: "font2", fontSize: 18.0),
-                        )),
-                    Container(
-                        margin: EdgeInsets.only(right: 30, top: 10),
-                        child: Text(
-                          "Swipe left or right to see more products",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.grey.withOpacity(0.8)),
-                        )),
-                  ],
-                )),
-          ),
-        )
-            : Center(
-          child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(
-              Color.fromRGBO(212, 20, 15, 1.0),
-            ),
-          ),
-        );
       },
     );
   }
@@ -529,86 +540,88 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       builder: (_, snapshot) {
         return snapshot.hasData
             ? Container(
-          margin: EdgeInsets.only(top: 10),
-          child: snapshot.data.documents.length != 0
-              ? StaggeredGridView.countBuilder(
-            crossAxisCount: 2,
-            mainAxisSpacing: 13,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (context,) =>
-                          _onTapImage(context, snapshot));
-                },
-                child: Container(
-                  margin: EdgeInsets.only(left: 10, right: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(12))),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12.0),
-                    ),
-                    child: FadeInImage.assetNetwork(
-                      placeholder: "img/img.gif",
-                      image: snapshot.data.documents[index]
-                      ["itemImage"],
-                      fit: BoxFit.cover,
-                      fadeInCurve: Curves.easeIn,
-                    ),
+                margin: EdgeInsets.only(top: 10),
+                child: snapshot.data.documents.length != 0
+                    ? StaggeredGridView.countBuilder(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 13,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (
+                                    context,
+                                  ) =>
+                                      _onTapImage(context, snapshot));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "img/img.gif",
+                                  image: snapshot.data.documents[index]
+                                      ["itemImage"],
+                                  fit: BoxFit.cover,
+                                  fadeInCurve: Curves.easeIn,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        staggeredTileBuilder: (index) {
+                          return StaggeredTile.count(
+                              1, index.isEven ? 1.0 : 1.60);
+                        },
+                      )
+                    : Container(
+                        child: Container(
+                            margin: EdgeInsets.only(top: 80, left: 20),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: 70),
+                                  height: 150,
+                                  child: Image.asset(
+                                    "img/as.png",
+                                    filterQuality: FilterQuality.high,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      "Nothing to see here",
+                                      style: TextStyle(
+                                          fontFamily: "font2", fontSize: 18.0),
+                                    )),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30, top: 10),
+                                    child: Text(
+                                      "Swipe left or right to see more products",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.grey.withOpacity(0.8)),
+                                    )),
+                              ],
+                            )),
+                      ),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(212, 20, 15, 1.0),
                   ),
                 ),
               );
-            },
-            staggeredTileBuilder: (index) {
-              return StaggeredTile.count(
-                  1, index.isEven ? 1.0 : 1.60);
-            },
-          )
-              : Container(
-            child: Container(
-                margin: EdgeInsets.only(top: 80, left: 20),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(right: 70),
-                      height: 150,
-                      child: Image.asset(
-                        "img/as.png",
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Container(
-                        margin: EdgeInsets.only(right: 30),
-                        child: Text(
-                          "Nothing to see here",
-                          style: TextStyle(
-                              fontFamily: "font2", fontSize: 18.0),
-                        )),
-                    Container(
-                        margin: EdgeInsets.only(right: 30, top: 10),
-                        child: Text(
-                          "Swipe left or right to see more products",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.grey.withOpacity(0.8)),
-                        )),
-                  ],
-                )),
-          ),
-        )
-            : Center(
-          child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(
-              Color.fromRGBO(212, 20, 15, 1.0),
-            ),
-          ),
-        );
       },
     );
   }
@@ -623,86 +636,88 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       builder: (_, snapshot) {
         return snapshot.hasData
             ? Container(
-          margin: EdgeInsets.only(top: 10),
-          child: snapshot.data.documents.length != 0
-              ? StaggeredGridView.countBuilder(
-            crossAxisCount: 2,
-            mainAxisSpacing: 13,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (context,) =>
-                          _onTapImage(context, snapshot));
-                },
-                child: Container(
-                  margin: EdgeInsets.only(left: 10, right: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(12))),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12.0),
-                    ),
-                    child: FadeInImage.assetNetwork(
-                      placeholder: "img/img.gif",
-                      image: snapshot.data.documents[index]
-                      ["itemImage"],
-                      fit: BoxFit.cover,
-                      fadeInCurve: Curves.easeIn,
-                    ),
+                margin: EdgeInsets.only(top: 10),
+                child: snapshot.data.documents.length != 0
+                    ? StaggeredGridView.countBuilder(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 13,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (
+                                    context,
+                                  ) =>
+                                      _onTapImage(context, snapshot));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "img/img.gif",
+                                  image: snapshot.data.documents[index]
+                                      ["itemImage"],
+                                  fit: BoxFit.cover,
+                                  fadeInCurve: Curves.easeIn,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        staggeredTileBuilder: (index) {
+                          return StaggeredTile.count(
+                              1, index.isEven ? 1.0 : 1.60);
+                        },
+                      )
+                    : Container(
+                        child: Container(
+                            margin: EdgeInsets.only(top: 80, left: 20),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: 70),
+                                  height: 150,
+                                  child: Image.asset(
+                                    "img/as.png",
+                                    filterQuality: FilterQuality.high,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      "Nothing to see here",
+                                      style: TextStyle(
+                                          fontFamily: "font2", fontSize: 18.0),
+                                    )),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30, top: 10),
+                                    child: Text(
+                                      "Swipe left or right to see more products",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.grey.withOpacity(0.8)),
+                                    )),
+                              ],
+                            )),
+                      ),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(212, 20, 15, 1.0),
                   ),
                 ),
               );
-            },
-            staggeredTileBuilder: (index) {
-              return StaggeredTile.count(
-                  1, index.isEven ? 1.0 : 1.60);
-            },
-          )
-              : Container(
-            child: Container(
-                margin: EdgeInsets.only(top: 80, left: 20),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(right: 70),
-                      height: 150,
-                      child: Image.asset(
-                        "img/as.png",
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Container(
-                        margin: EdgeInsets.only(right: 30),
-                        child: Text(
-                          "Nothing to see here",
-                          style: TextStyle(
-                              fontFamily: "font2", fontSize: 18.0),
-                        )),
-                    Container(
-                        margin: EdgeInsets.only(right: 30, top: 10),
-                        child: Text(
-                          "Swipe left or right to see more products",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.grey.withOpacity(0.8)),
-                        )),
-                  ],
-                )),
-          ),
-        )
-            : Center(
-          child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(
-              Color.fromRGBO(212, 20, 15, 1.0),
-            ),
-          ),
-        );
       },
     );
   }
@@ -717,122 +732,137 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
       builder: (_, snapshot) {
         return snapshot.hasData
             ? Container(
-          margin: EdgeInsets.only(top: 10),
-          child: snapshot.data.documents.length != 0
-              ? StaggeredGridView.countBuilder(
-            crossAxisCount: 2,
-            mainAxisSpacing: 13,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (context,) =>
-                          _onTapImage(context, snapshot));
-                },
-                child: Container(
-                  margin: EdgeInsets.only(left: 10, right: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(12))),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12.0),
-                    ),
-                    child: FadeInImage.assetNetwork(
-                      placeholder: "img/img.gif",
-                      image: snapshot.data.documents[index]
-                      ["itemImage"],
-                      fit: BoxFit.cover,
-                      fadeInCurve: Curves.easeIn,
-                    ),
+                margin: EdgeInsets.only(top: 10),
+                child: snapshot.data.documents.length != 0
+                    ? StaggeredGridView.countBuilder(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 13,
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (
+                                    context,
+                                  ) =>
+                                      _onTapImage(context, snapshot));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12))),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(12.0),
+                                ),
+                                child: FadeInImage.assetNetwork(
+                                  placeholder: "img/img.gif",
+                                  image: snapshot.data.documents[index]
+                                      ["itemImage"],
+                                  fit: BoxFit.cover,
+                                  fadeInCurve: Curves.easeIn,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        staggeredTileBuilder: (index) {
+                          return StaggeredTile.count(
+                              1, index.isEven ? 1.0 : 1.60);
+                        },
+                      )
+                    : Container(
+                        child: Container(
+                            margin: EdgeInsets.only(top: 80, left: 20),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: 70),
+                                  height: 150,
+                                  child: Image.asset(
+                                    "img/as.png",
+                                    filterQuality: FilterQuality.high,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      "Nothing to see here",
+                                      style: TextStyle(
+                                          fontFamily: "font2", fontSize: 18.0),
+                                    )),
+                                Container(
+                                    margin: EdgeInsets.only(right: 30, top: 10),
+                                    child: Text(
+                                      "Swipe left or right to see more products",
+                                      style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Colors.grey.withOpacity(0.8)),
+                                    )),
+                              ],
+                            )),
+                      ),
+              )
+            : Center(
+                child: CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    Color.fromRGBO(212, 20, 15, 1.0),
                   ),
                 ),
               );
-            },
-            staggeredTileBuilder: (index) {
-              return StaggeredTile.count(
-                  1, index.isEven ? 1.0 : 1.60);
-            },
-          )
-              : Container(
-            child: Container(
-                margin: EdgeInsets.only(top: 80, left: 20),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(right: 70),
-                      height: 150,
-                      child: Image.asset(
-                        "img/as.png",
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Container(
-                        margin: EdgeInsets.only(right: 30),
-                        child: Text(
-                          "Nothing to see here",
-                          style: TextStyle(
-                              fontFamily: "font2", fontSize: 18.0),
-                        )),
-                    Container(
-                        margin: EdgeInsets.only(right: 30, top: 10),
-                        child: Text(
-                          "Swipe left or right to see more products",
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.grey.withOpacity(0.8)),
-                        )),
-                  ],
-                )),
-          ),
-        )
-            : Center(
-          child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(
-              Color.fromRGBO(212, 20, 15, 1.0),
-            ),
-          ),
-        );
       },
     );
   }
 
   Widget messageBox() {
-    return Container(
-      height: 70,
-      width: 300,
-      child: new TextFormField(
-          onChanged: (value) {
-            message = value;
-          },
-          cursorColor: Colors.red,
-          keyboardType: TextInputType.multiline,
-          maxLines: 3,
-          controller: msgcon,
-          decoration: InputDecoration.collapsed(
-            hintStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: Colors.grey.withOpacity(0.8),
+    return Padding(
+      padding: const EdgeInsets.only(left: 15.0, right: 10),
+      child: Container(
+        height: 80,
+        width: 300,
+        child: new TextFormField(
+            onChanged: (value) {
+              message = value;
+            },
+            cursorColor: Colors.green,
+            textInputAction: TextInputAction.done,
+            maxLines: 15,
+            controller: msgcon,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Color(0xFFDBEDFF),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                borderSide: BorderSide(color: Colors.transparent),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                borderSide: BorderSide(color: Colors.transparent),
+              ),
+              hintStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: Colors.grey.withOpacity(0.8),
+              ),
+              hintText: "Write your message here..",
             ),
-            hintText: "Your message here",
-          ),
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18.0,
-            fontWeight: FontWeight.w300,
-          )),
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w300,
+            )),
+      ),
     );
   }
 
   Widget pri() {
     return Container(
       height: 20,
-      width: 100,
+      width: 200,
       margin: EdgeInsets.only(left: 15),
       color: Colors.transparent,
       child: new TextFormField(
@@ -846,16 +876,15 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
           decoration: InputDecoration.collapsed(
             hintStyle: TextStyle(
               fontSize: 15,
-              color: Colors.grey.withOpacity(0.8),
+              color: Colors.red.withOpacity(0.8),
             ),
-            hintText: "Your Price",
+            hintText: "Price goes here",
           ),
           style: TextStyle(
             color: Colors.black.withOpacity(0.8),
             fontSize: 15.0,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           )),
     );
   }
 }
-
