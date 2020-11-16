@@ -18,28 +18,26 @@ class _SellingSeeMoreState extends State<SellingSeeMore> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData.fallback(),
-          backgroundColor: Colors.white,
-          elevation: 0.0,
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData.fallback(),
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Container(
-            height: 950,
-            width: 500,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                best(),
-                SizedBox(
-                  height: 25,
-                ),
-                detailPage()
-              ],
-            ),
+        elevation: 0.0,
+      ),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Container(
+          height: 950,
+          width: 500,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              best(),
+              SizedBox(
+                height: 25,
+              ),
+              detailPage()
+            ],
           ),
         ),
       ),

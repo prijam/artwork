@@ -206,19 +206,7 @@ class _CollectionState extends State<Collection> with TickerProviderStateMixin {
                           ),
                         ),
                         messageBox(),
-                        showloading
-                            ? Container(
-                                width: 100,
-                                height: 50,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Color.fromRGBO(212, 20, 15, 1.0),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : Padding(
+                      Padding(
                                 padding: const EdgeInsets.only(
                                     left: 50.0, right: 50, top: 8),
                                 child: RaisedButton(
