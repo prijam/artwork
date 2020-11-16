@@ -18,6 +18,7 @@ class Details extends StatefulWidget {
 class _DetailsState extends State<Details> {
   GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey();
   firestore fire = firestore();
+  bool addded1 = false;
 
   @override
   void initState() {
@@ -174,7 +175,7 @@ class _DetailsState extends State<Details> {
           //               color: Colors.white, fontWeight: FontWeight.w600),
           //         ),
           //       )
-          widget.added
+          widget.added || addded1
               ? RaisedButton(
                   elevation: 0.0,
                   shape: RoundedRectangleBorder(
@@ -216,6 +217,9 @@ class _DetailsState extends State<Details> {
                   color: Colors.deepOrange,
                   onPressed: () {
                     addtocart();
+                    setState(() {
+                      addded1 = true;
+                    });
                   },
                   child: Text(
                     "Add to cart",
