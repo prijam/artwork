@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   TabController _tabController;
   firestore fire = firestore();
   bool alreadytoCart = false;
+  bool alreadyWishList = false;
 
   @override
   void initState() {
@@ -320,6 +321,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       alreadytoCart = false;
                     }
                   });
+                  Firestore.instance
+                      .collection("users")
+                      .document(widget.firebaseUser.uid)
+                      .collection("User_Data")
+                      .document("Wish_List")
+                      .collection("wish_items")
+                      .getDocuments()
+                      .asStream()
+                      .listen((event) {
+                    List data = [];
+                    for (int i = 0; i < event.documents.length; i++) {
+                      data.add(event.documents[i].documentID);
+                    }
+
+                    if (data.contains(documentSnapshot.documentID) == true) {
+                      setState(() {
+                        alreadyWishList = true;
+                      });
+                    } else {
+                      alreadyWishList = false;
+                    }
+                  });
                   Future.delayed(Duration(seconds: 1), () {
                     Navigator.push(
                         context,
@@ -328,6 +351,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   post: documentSnapshot,
                                   uid: widget.firebaseUser.uid,
                                   added: alreadytoCart,
+                                  wishList: alreadyWishList,
                                 )));
                   });
                 },

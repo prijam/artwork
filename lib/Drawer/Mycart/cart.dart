@@ -80,12 +80,8 @@ class _MyCartState extends State<MyCart> {
               Container(
                 width: 30,
                 height: 50,
-                decoration: BoxDecoration(
-                    color: currentPage == 1.toString() ||
-                            currentPage == 2.toString()
-                        ? Colors.green
-                        : Colors.grey.withOpacity(0.3),
-                    shape: BoxShape.circle),
+                decoration:
+                    BoxDecoration(color: Colors.green, shape: BoxShape.circle),
               ),
               Container(
                 width: 50,

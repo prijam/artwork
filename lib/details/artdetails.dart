@@ -7,9 +7,10 @@ import 'package:flutter/services.dart';
 class Details extends StatefulWidget {
   final DocumentSnapshot post;
   final bool added;
+  bool wishList;
   final String uid;
 
-  Details({this.post, this.added, this.uid});
+  Details({this.post, this.added, this.uid, this.wishList});
 
   @override
   _DetailsState createState() => _DetailsState();
@@ -22,7 +23,6 @@ class _DetailsState extends State<Details> {
 
   @override
   void initState() {
-    print(widget.added);
     super.initState();
   }
 
@@ -65,6 +65,22 @@ class _DetailsState extends State<Details> {
           child: Stack(
             children: <Widget>[
               image(),
+              Positioned(
+                  top: 280.0,
+                  right: 10,
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      widget.wishList ? delete() : wishList();
+                      setState(() {
+                        widget.wishList = !widget.wishList;
+                      });
+                    },
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.favorite,
+                      color: widget.wishList ? Colors.red : Colors.grey,
+                    ),
+                  )),
               Positioned(top: 350, child: detailsview())
             ],
           ),
@@ -161,20 +177,6 @@ class _DetailsState extends State<Details> {
               ],
             ),
           ),
-          // addtoCart
-          //     ? RaisedButton(
-          //         elevation: 0.0,
-          //         shape: RoundedRectangleBorder(
-          //             borderRadius: BorderRadius.circular(5.0),
-          //             side: BorderSide(color: Colors.red)),
-          //         color: Colors.green,
-          //         onPressed: () {},
-          //         child: Text(
-          //           "Added to Cart",
-          //           style: TextStyle(
-          //               color: Colors.white, fontWeight: FontWeight.w600),
-          //         ),
-          //       )
           widget.added || addded1
               ? RaisedButton(
                   elevation: 0.0,
@@ -247,6 +249,32 @@ class _DetailsState extends State<Details> {
       "itemImage": widget.post.data["img"],
       "itemType": widget.post.data["arttype"],
     });
+  }
+
+  void wishList() {
+    DocumentReference documentReference = Firestore.instance
+        .collection("users")
+        .document(widget.uid)
+        .collection("User_Data")
+        .document("Wish_List")
+        .collection("wish_items")
+        .document(widget.post.documentID);
+    documentReference.setData({
+      "title": widget.post.data["title"],
+      "price": widget.post.data["price"],
+      "itemImage": widget.post.data["img"],
+      "itemType": widget.post.data["arttype"],
+    });
+  }
+
+  void delete() async {
+    CollectionReference col = Firestore.instance
+        .collection("users")
+        .document(widget.uid)
+        .collection("User_Data")
+        .document("Wish_List")
+        .collection("wish_items");
+    col.document(widget.post.documentID).delete();
   }
 
   Widget details() {

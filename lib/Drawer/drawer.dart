@@ -3,6 +3,7 @@ import 'package:artstore/Drawer/Mycart/cart.dart';
 import 'package:artstore/Drawer/Notification/NotificationView.dart';
 import 'package:artstore/Drawer/Payment/creditCard.dart';
 import 'package:artstore/Drawer/Payment/details.dart';
+import 'package:artstore/Drawer/wishListt/wishList.dart';
 import 'package:artstore/HomePage/home.dart';
 import 'package:artstore/firebaseHandler/auth.dart';
 import 'package:artstore/firebaseHandler/userModel.dart';
@@ -25,6 +26,11 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class _HomeDrawerState extends State<HomeDrawer> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -249,6 +255,46 @@ class _HomeDrawerState extends State<HomeDrawer> {
                                       color: Colors.black.withOpacity(0.7)),
                                 ),
                               )
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => WishList(
+                                        uid: widget.firebaseUser.uid,
+                                      )));
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(right: 50),
+                          width: 150,
+                          height: 40,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(
+                                Icons.card_travel,
+                                color: Colors.black.withOpacity(0.7),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(bottom: 3, right: .5),
+                                width: 100,
+                                height: 20,
+                                child: Text(
+                                  "WishList",
+                                  style: TextStyle(
+                                      letterSpacing: 0.3,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black.withOpacity(0.7)),
+                                ),
+                              ),
                             ],
                           ),
                         ),
