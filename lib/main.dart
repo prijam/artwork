@@ -1,4 +1,5 @@
-import 'package:artstore/HomePage/home.dart';
+ ..
+ import 'package:artstore/HomePage/home.dart';
 import 'package:artstore/Login/loginpage.dart';
 import 'package:artstore/Login/rootScreen.dart';
 import 'package:artstore/CustomWidget/splashScreen.dart';
