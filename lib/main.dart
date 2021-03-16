@@ -1,15 +1,12 @@
- ..
- import 'package:artstore/HomePage/home.dart';
+import 'package:artstore/HomePage/home.dart';
 import 'package:artstore/Login/loginpage.dart';
 import 'package:artstore/Login/rootScreen.dart';
 import 'package:artstore/CustomWidget/splashScreen.dart';
 import 'package:artstore/Login/signup.dart';
-import 'package:artstore/introScreen/viewPage.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Login/Welcome.dart';
 
 void main() => runApp(ArtApp());
 

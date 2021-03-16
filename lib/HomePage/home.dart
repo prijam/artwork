@@ -11,6 +11,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../Drawer/drawer.dart';
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class HomePage extends StatefulWidget {
   final FirebaseUser firebaseUser;
@@ -27,6 +31,76 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   firestore fire = firestore();
   bool alreadytoCart = false;
   bool alreadyWishList = false;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  static dynamic decodeJson(String jsonString) {
+    return json.decode(jsonString);
+  }
+
+  static Future<String> getPreferences(String key) async {
+    return ((await SharedPreferences?.getInstance())?.getString(key)) ?? "";
+  }
+
+  static Future<Null> setPreferences(String key, String value) async {
+    (await SharedPreferences?.getInstance())?.setString(key, value);
+  }
+
+  static bool isEmpty(dynamic data) {
+    if (data == null) {
+      return true;
+    }
+    var d = data.toString().trim();
+    if (d == "" || d == "[]" || d == "{}") {
+      return true;
+    }
+    return false;
+  }
+
+  static String encodeJson(dynamic jsonData) {
+    return json.encode(jsonData);
+  }
+
+  _handleFirebaseMessageOffline(Map<String, dynamic> message,
+      {bool force: false}) {
+    String title = "", body = "", url = "";
+    try {
+      message['seen'] = force;
+      message['received_at'] = new DateTime.now().toString();
+      title = message['alert_title'] ??
+          (message["data"] ?? {})['alert_title'] ??
+          "";
+      body =
+          message['alert_body'] ?? (message["data"] ?? {})['alert_body'] ?? "";
+      url = message['url'] ?? (message["data"] ?? {})['url'] ?? "";
+      if (title.length > 0) {
+        getPreferences("notifications").then((data) {
+          if (isEmpty(data)) {
+            data = "[]";
+          }
+          List dataList = decodeJson(data);
+          dataList.insert(0, message);
+          setPreferences("notifications", encodeJson(dataList));
+        });
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Text(title),
+              content: Text(body),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Dismiss"),
+                ),
+              ],
+            ));
+    return null;
+  }
 
   @override
   void initState() {
@@ -34,6 +108,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     HomePage();
     _tabController = new TabController(vsync: this, length: 4);
     _tabController.addListener(_handleTabSelection);
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        _handleFirebaseMessageOffline(message);
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        _handleFirebaseMessageOffline(message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        _handleFirebaseMessageOffline(message);
+      },
+    );
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {});
   }
 
   void _handleTabSelection() {
@@ -67,7 +156,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 SizedBox(
                   height: 10.0,
                 ),
-                Search(),
+                search(),
                 SizedBox(
                   height: 20.0,
                 ),
@@ -132,7 +221,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ]);
   }
 
-  Widget Search() {
+  Widget search() {
     return Padding(
         padding: EdgeInsets.only(top: 20.0, left: 20, right: 20.0),
         child: new TextField(

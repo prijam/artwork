@@ -1,4 +1,4 @@
-import 'package:artstore/Drawer/Messages/msg.dart';
+import 'package:artstore/HomePage/noti.dart';
 import 'package:artstore/Drawer/Mycart/cart.dart';
 import 'package:artstore/Drawer/Notification/NotificationView.dart';
 import 'package:artstore/Drawer/Payment/creditCard.dart';
@@ -340,7 +340,42 @@ class _HomeDrawerState extends State<HomeDrawer> {
                         ),
                       ),
                       SizedBox(
-                        height: 40,
+                        height: 15,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => NotificationList()));
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(right: 50),
+                          width: 150,
+                          height: 40,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(
+                                Icons.notifications,
+                                color: Colors.black.withOpacity(0.7),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(bottom: 3, right: .5),
+                                width: 100,
+                                height: 20,
+                                child: Text(
+                                  "Notification",
+                                  style: TextStyle(
+                                      letterSpacing: 0.3,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black.withOpacity(0.7)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                       Divider(),
                       SizedBox(
